@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Safar — Travel Expense Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-soft: #4a3f35;
+    --ink-faint: #8b7d72;
+    --paper: #fdf8f2;
+    --paper-warm: #f7f0e6;
+    --paper-card: #fffcf8;
+    --amber: #e8890c;
+    --amber-light: #fbb740;
+    --amber-glow: #fff3d6;
+    --rust: #c4562a;
+    --mint: #2a8c6e;
+    --sky: #2a6b8c;
+    --border: rgba(26,20,16,0.1);
+    --shadow-sm: 0 2px 8px rgba(26,20,16,0.08);
+    --shadow-md: 0 8px 32px rgba(26,20,16,0.14);
+    --shadow-lg: 0 20px 60px rgba(26,20,16,0.2);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–paper);
+color: var(–ink);
+min-height: 100vh;
+max-width: 430px;
+margin: 0 auto;
+position: relative;
+overflow-x: hidden;
+}
+
+/* Subtle paper texture */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘400’ height=‘400’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3CfeColorMatrix type=‘saturate’ values=‘0’/%3E%3C/filter%3E%3Crect width=‘400’ height=‘400’ filter=‘url(%23n)’ opacity=‘0.025’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 0;
+}
+
+/* ─── HEADER ─── */
+.header {
+position: sticky;
+top: 0;
+z-index: 100;
+background: var(–paper);
+border-bottom: 1px solid var(–border);
+padding: 16px 20px 14px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+backdrop-filter: blur(12px);
+}
+
+.header-brand {
+display: flex;
+flex-direction: column;
+gap: 1px;
+}
+
+.brand-name {
+font-family: ‘Lora’, serif;
+font-size: 22px;
+font-weight: 600;
+color: var(–ink);
+letter-spacing: -0.3px;
+line-height: 1;
+}
+
+.brand-sub {
+font-size: 11px;
+font-weight: 400;
+color: var(–ink-faint);
+letter-spacing: 0.8px;
+text-transform: uppercase;
+}
+
+.total-pill {
+background: var(–ink);
+color: var(–paper);
+border-radius: 100px;
+padding: 8px 16px;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 1px;
+}
+
+.total-label {
+font-size: 9px;
+font-weight: 500;
+letter-spacing: 1px;
+text-transform: uppercase;
+opacity: 0.6;
+}
+
+.total-amount {
+font-family: ‘Lora’, serif;
+font-size: 18px;
+font-weight: 600;
+line-height: 1;
+}
+
+/* ─── TABS ─── */
+.tabs {
+display: flex;
+gap: 4px;
+padding: 12px 20px 0;
+background: var(–paper);
+position: sticky;
+top: 72px;
+z-index: 99;
+}
+
+.tab {
+flex: 1;
+padding: 10px 8px;
+border: none;
+background: transparent;
+border-bottom: 2px solid transparent;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 13px;
+font-weight: 500;
+color: var(–ink-faint);
+cursor: pointer;
+transition: all 0.2s;
+text-align: center;
+}
+
+.tab.active {
+color: var(–amber);
+border-bottom-color: var(–amber);
+}
+
+/* ─── VIEWS ─── */
+.view { display: none; padding: 16px 20px 120px; }
+.view.active { display: block; }
+
+/* ─── DATE GROUP ─── */
+.date-group { margin-bottom: 24px; }
+
+.date-label {
+font-size: 11px;
+font-weight: 600;
+color: var(–ink-faint);
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.date-label::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+
+/* ─── EXPENSE CARD ─── */
+.expense-card {
+background: var(–paper-card);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 14px 16px;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 12px;
+box-shadow: var(–shadow-sm);
+cursor: pointer;
+transition: transform 0.15s, box-shadow 0.15s;
+position: relative;
+overflow: hidden;
+}
+
+.expense-card::before {
+content: ‘’;
+position: absolute;
+left: 0;
+top: 0;
+bottom: 0;
+width: 3px;
+border-radius: 3px 0 0 3px;
+}
+
+.expense-card.Food::before { background: var(–amber); }
+.expense-card.Travel::before { background: var(–sky); }
+.expense-card.Misc::before { background: var(–ink-faint); }
+.expense-card.Stay::before { background: var(–mint); }
+.expense-card.Shopping::before { background: var(–rust); }
+
+.expense-card:active { transform: scale(0.98); box-shadow: var(–shadow-sm); }
+
+.cat-icon {
+width: 40px;
+height: 40px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 18px;
+flex-shrink: 0;
+}
+
+.cat-icon.Food { background: var(–amber-glow); }
+.cat-icon.Travel { background: #e3f0f8; }
+.cat-icon.Misc { background: #f0ece8; }
+.cat-icon.Stay { background: #e3f4ef; }
+.cat-icon.Shopping { background: #fceee9; }
+
+.expense-info { flex: 1; min-width: 0; }
+
+.expense-name {
+font-size: 15px;
+font-weight: 500;
+color: var(–ink);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+margin-bottom: 3px;
+}
+
+.expense-meta {
+font-size: 11px;
+color: var(–ink-faint);
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.expense-meta span { display: flex; align-items: center; gap: 3px; }
+
+.expense-amount {
+font-family: ‘Lora’, serif;
+font-size: 17px;
+font-weight: 600;
+color: var(–ink);
+flex-shrink: 0;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+text-align: center;
+padding: 60px 20px;
+color: var(–ink-faint);
+}
+
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+
+.empty-title {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+color: var(–ink-soft);
+margin-bottom: 8px;
+}
+
+.empty-sub { font-size: 14px; line-height: 1.6; }
+
+/* ─── SUMMARY VIEW ─── */
+.summary-card {
+background: var(–ink);
+color: var(–paper);
+border-radius: var(–radius);
+padding: 24px 20px;
+margin-bottom: 16px;
+position: relative;
+overflow: hidden;
+}
+
+.summary-card::after {
+content: ‘₹’;
+position: absolute;
+right: -10px;
+top: -20px;
+font-family: ‘Lora’, serif;
+font-size: 120px;
+opacity: 0.06;
+color: var(–amber-light);
+}
+
+.summary-total-label {
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 1.2px;
+text-transform: uppercase;
+opacity: 0.5;
+margin-bottom: 8px;
+}
+
+.summary-total-amount {
+font-family: ‘Lora’, serif;
+font-size: 42px;
+font-weight: 600;
+margin-bottom: 4px;
+}
+
+.summary-count {
+font-size: 12px;
+opacity: 0.5;
+}
+
+.summary-section-title {
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 1px;
+text-transform: uppercase;
+color: var(–ink-faint);
+margin: 20px 0 10px;
+}
+
+.cat-bar-row {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 10px;
+}
+
+.cat-bar-label {
+font-size: 13px;
+color: var(–ink-soft);
+width: 70px;
+flex-shrink: 0;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.cat-bar-track {
+flex: 1;
+height: 8px;
+background: var(–paper-warm);
+border-radius: 4px;
+overflow: hidden;
+}
+
+.cat-bar-fill {
+height: 100%;
+border-radius: 4px;
+transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cat-bar-amount {
+font-family: ‘Lora’, serif;
+font-size: 13px;
+font-weight: 600;
+color: var(–ink);
+width: 64px;
+text-align: right;
+flex-shrink: 0;
+}
+
+/* Split */
+.split-card {
+background: var(–paper-card);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 18px;
+margin-top: 8px;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.split-person {
+flex: 1;
+text-align: center;
+}
+
+.split-name {
+font-size: 12px;
+color: var(–ink-faint);
+margin-bottom: 4px;
+}
+
+.split-amount {
+font-family: ‘Lora’, serif;
+font-size: 24px;
+font-weight: 600;
+color: var(–ink);
+}
+
+.split-divider {
+font-size: 20px;
+color: var(–border);
+}
+
+/* ─── FAB ─── */
+.fab {
+position: fixed;
+bottom: 28px;
+right: 50%;
+transform: translateX(50%);
+width: 64px;
+height: 64px;
+background: var(–amber);
+border-radius: 50%;
+border: none;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 4px 20px rgba(232,137,12,0.45), 0 1px 4px rgba(232,137,12,0.3);
+z-index: 200;
+transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+max-width: 430px;
+}
+
+.fab:active { transform: translateX(50%) scale(0.92); }
+
+.fab svg { transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.fab.open svg { transform: rotate(45deg); }
+
+/* ─── BOTTOM SHEET ─── */
+.sheet-overlay {
+position: fixed;
+inset: 0;
+background: rgba(26,20,16,0.4);
+z-index: 300;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s;
+backdrop-filter: blur(4px);
+}
+
+.sheet-overlay.visible { opacity: 1; pointer-events: all; }
+
+.bottom-sheet {
+position: fixed;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%) translateY(100%);
+width: 100%;
+max-width: 430px;
+background: var(–paper-card);
+border-radius: 24px 24px 0 0;
+z-index: 400;
+padding: 0 20px 40px;
+transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+box-shadow: 0 -8px 40px rgba(26,20,16,0.18);
+max-height: 92vh;
+overflow-y: auto;
+}
+
+.bottom-sheet.open { transform: translateX(-50%) translateY(0); }
+
+.sheet-handle {
+width: 36px;
+height: 4px;
+background: var(–border);
+border-radius: 2px;
+margin: 12px auto 20px;
+}
+
+.sheet-title {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+font-weight: 600;
+color: var(–ink);
+margin-bottom: 20px;
+}
+
+/* ─── FORM ─── */
+.field { margin-bottom: 16px; }
+
+.field-label {
+font-size: 11px;
+font-weight: 600;
+color: var(–ink-faint);
+text-transform: uppercase;
+letter-spacing: 0.8px;
+margin-bottom: 6px;
+display: block;
+}
+
+.field-input {
+width: 100%;
+padding: 14px 16px;
+border: 1.5px solid var(–border);
+border-radius: var(–radius-sm);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 16px;
+color: var(–ink);
+background: var(–paper);
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+-webkit-appearance: none;
+}
+
+.field-input:focus {
+border-color: var(–amber);
+box-shadow: 0 0 0 3px rgba(232,137,12,0.12);
+}
+
+.amount-wrap { position: relative; }
+
+.amount-prefix {
+position: absolute;
+left: 16px;
+top: 50%;
+transform: translateY(-50%);
+font-family: ‘Lora’, serif;
+font-size: 18px;
+font-weight: 600;
+color: var(–ink-soft);
+pointer-events: none;
+}
+
+.field-input.amount { padding-left: 34px; font-family: ‘Lora’, serif; font-size: 24px; font-weight: 600; }
+
+/* Category chips */
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.chip {
+padding: 8px 14px;
+border-radius: 100px;
+border: 1.5px solid var(–border);
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+background: var(–paper);
+color: var(–ink-soft);
+transition: all 0.15s;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.chip.selected { background: var(–ink); color: var(–paper); border-color: var(–ink); }
+
+/* Suggestions */
+.suggestions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.suggestion {
+padding: 6px 12px;
+background: var(–paper-warm);
+border-radius: 100px;
+font-size: 12px;
+cursor: pointer;
+color: var(–ink-soft);
+transition: background 0.15s;
+border: none;
+}
+
+.suggestion:active { background: var(–amber-glow); }
+
+.location-row { display: flex; gap: 8px; }
+.location-row .field-input { flex: 1; }
+.location-btn {
+width: 50px;
+height: 50px;
+border-radius: var(–radius-sm);
+border: 1.5px solid var(–border);
+background: var(–paper);
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+font-size: 18px;
+flex-shrink: 0;
+transition: all 0.15s;
+}
+
+.location-btn:active { background: var(–amber-glow); border-color: var(–amber); }
+
+.save-btn {
+width: 100%;
+padding: 18px;
+background: var(–amber);
+color: white;
+border: none;
+border-radius: var(–radius);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 17px;
+font-weight: 600;
+cursor: pointer;
+margin-top: 8px;
+box-shadow: 0 4px 16px rgba(232,137,12,0.35);
+transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.save-btn:active { transform: scale(0.98); box-shadow: 0 2px 8px rgba(232,137,12,0.25); }
+
+/* Edit sheet */
+.edit-actions {
+display: flex;
+gap: 10px;
+margin-top: 8px;
+}
+
+.edit-save-btn {
+flex: 1;
+padding: 16px;
+background: var(–ink);
+color: var(–paper);
+border: none;
+border-radius: var(–radius);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+transition: opacity 0.15s;
+}
+
+.delete-btn {
+padding: 16px 20px;
+background: transparent;
+border: 1.5px solid #e74c3c33;
+color: #e74c3c;
+border-radius: var(–radius);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 16px;
+font-weight: 500;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+/* ─── TOAST ─── */
+.toast {
+position: fixed;
+top: 90px;
+left: 50%;
+transform: translateX(-50%) translateY(-20px);
+background: var(–ink);
+color: var(–paper);
+padding: 12px 20px;
+border-radius: 100px;
+font-size: 14px;
+font-weight: 500;
+z-index: 999;
+opacity: 0;
+pointer-events: none;
+transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+display: flex;
+align-items: center;
+gap: 8px;
+white-space: nowrap;
+}
+
+.toast.show {
+opacity: 1;
+transform: translateX(-50%) translateY(0);
+}
+
+/* ─── OFFLINE BADGE ─── */
+.offline-badge {
+position: fixed;
+top: 10px;
+left: 50%;
+transform: translateX(-50%);
+background: #e74c3c;
+color: white;
+font-size: 11px;
+font-weight: 600;
+padding: 4px 12px;
+border-radius: 100px;
+z-index: 999;
+display: none;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.expense-card { animation: fadeInUp 0.25s ease forwards; }
+
+@keyframes tickPop {
+0% { transform: scale(0); }
+60% { transform: scale(1.2); }
+100% { transform: scale(1); }
+}
+
+.tick-anim { animation: tickPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+</style>
+
+</head>
+<body>
+
+<!-- Offline badge -->
+
+<div class="offline-badge" id="offlineBadge">📴 Offline — saving locally</div>
+
+<!-- Toast -->
+
+<div class="toast" id="toast">✓ Expense saved</div>
+
+<!-- Header -->
+
+<header class="header">
+  <div class="header-brand">
+    <div class="brand-name">Safar</div>
+    <div class="brand-sub" id="tripName">Trip Tracker</div>
+  </div>
+  <div class="total-pill">
+    <span class="total-label">Total</span>
+    <span class="total-amount" id="headerTotal">₹0</span>
+  </div>
+</header>
+
+<!-- Tabs -->
+
+<div class="tabs">
+  <button class="tab active" data-view="timeline">Timeline</button>
+  <button class="tab" data-view="summary">Summary</button>
+</div>
+
+<!-- Timeline View -->
+
+<div class="view active" id="view-timeline">
+  <div id="timelineContent"></div>
+</div>
+
+<!-- Summary View -->
+
+<div class="view" id="view-summary">
+  <div class="summary-card">
+    <div class="summary-total-label">Total Spent</div>
+    <div class="summary-total-amount" id="summaryTotal">₹0</div>
+    <div class="summary-count" id="summaryCount">0 expenses</div>
+  </div>
+
+  <div class="summary-section-title">By Category</div>
+  <div id="catBars"></div>
+
+  <div class="summary-section-title">Split (2 people)</div>
+  <div class="split-card">
+    <div class="split-person">
+      <div class="split-name">You</div>
+      <div class="split-amount" id="splitYou">₹0</div>
+    </div>
+    <div class="split-divider">÷</div>
+    <div class="split-person">
+      <div class="split-name">Together</div>
+      <div class="split-amount" id="splitTogether">₹0</div>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet Overlay -->
+
+<div class="sheet-overlay" id="sheetOverlay"></div>
+
+<!-- Add Expense Sheet -->
+
+<div class="bottom-sheet" id="addSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Add Expense</div>
+
+  <div class="field">
+    <label class="field-label">Name</label>
+    <div class="suggestions" id="nameSuggestions"></div>
+    <input type="text" class="field-input" id="expName" placeholder="e.g. Chai, Auto, Lunch…" autocomplete="off" style="margin-top:8px">
+  </div>
+
+  <div class="field">
+    <label class="field-label">Amount</label>
+    <div class="amount-wrap">
+      <span class="amount-prefix">₹</span>
+      <input type="number" inputmode="decimal" class="field-input amount" id="expAmount" placeholder="0">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Category</label>
+    <div class="chips" id="catChips">
+      <div class="chip selected" data-cat="Food">🍽 Food</div>
+      <div class="chip" data-cat="Travel">🚗 Travel</div>
+      <div class="chip" data-cat="Stay">🏨 Stay</div>
+      <div class="chip" data-cat="Shopping">🛍 Shopping</div>
+      <div class="chip" data-cat="Misc">✦ Misc</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Location</label>
+    <div class="location-row">
+      <input type="text" class="field-input" id="expLocation" placeholder="e.g. Varanasi Station">
+      <button class="location-btn" id="gpsBtn" title="Detect location">📍</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Date & Time</label>
+    <input type="datetime-local" class="field-input" id="expDateTime">
+  </div>
+
+<button class="save-btn" id="saveBtn">Save Expense</button>
+
+</div>
+
+<!-- Edit Expense Sheet -->
+
+<div class="bottom-sheet" id="editSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Edit Expense</div>
+
+  <input type="hidden" id="editId">
+
+  <div class="field">
+    <label class="field-label">Name</label>
+    <input type="text" class="field-input" id="editName">
+  </div>
+
+  <div class="field">
+    <label class="field-label">Amount</label>
+    <div class="amount-wrap">
+      <span class="amount-prefix">₹</span>
+      <input type="number" inputmode="decimal" class="field-input amount" id="editAmount">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Category</label>
+    <div class="chips" id="editCatChips">
+      <div class="chip selected" data-cat="Food">🍽 Food</div>
+      <div class="chip" data-cat="Travel">🚗 Travel</div>
+      <div class="chip" data-cat="Stay">🏨 Stay</div>
+      <div class="chip" data-cat="Shopping">🛍 Shopping</div>
+      <div class="chip" data-cat="Misc">✦ Misc</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Location</label>
+    <input type="text" class="field-input" id="editLocation">
+  </div>
+
+  <div class="field">
+    <label class="field-label">Date & Time</label>
+    <input type="datetime-local" class="field-input" id="editDateTime">
+  </div>
+
+  <div class="edit-actions">
+    <button class="edit-save-btn" id="editSaveBtn">Save Changes</button>
+    <button class="delete-btn" id="deleteBtn">🗑 Delete</button>
+  </div>
+</div>
+
+<!-- FAB -->
+
+<button class="fab" id="fab">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<script>
+// ─── DATA ───
+const STORAGE_KEY = 'safar_expenses_v2';
+let expenses = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let selectedCat = 'Food';
+let editSelectedCat = 'Food';
+
+const CAT_ICONS = { Food:'🍽', Travel:'🚗', Stay:'🏨', Shopping:'🛍', Misc:'✦' };
+const CAT_COLORS = { Food:'#e8890c', Travel:'#2a6b8c', Stay:'#2a8c6e', Shopping:'#c4562a', Misc:'#8b7d72' };
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+}
+
+function formatCurrency(n) {
+  return '₹' + Number(n).toLocaleString('en-IN', {maximumFractionDigits:2});
+}
+
+function formatTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true});
+}
+
+function formatDateKey(iso) {
+  const d = new Date(iso);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+  const target = new Date(d); target.setHours(0,0,0,0);
+  if (target.getTime() === today.getTime()) return 'Today';
+  if (target.getTime() === yesterday.getTime()) return 'Yesterday';
+  return d.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'short'});
+}
+
+function getTotal() {
+  return expenses.reduce((s, e) => s + parseFloat(e.amount||0), 0);
+}
+
+// ─── RENDER TIMELINE ───
+function renderTimeline() {
+  const container = document.getElementById('timelineContent');
+  const total = getTotal();
+
+  document.getElementById('headerTotal').textContent = formatCurrency(total);
+
+  if (!expenses.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🗺</div>
+        <div class="empty-title">No expenses yet</div>
+        <div class="empty-sub">Tap the + button to log your first<br>travel expense</div>
+      </div>`;
+    return;
+  }
+
+  // Group by date
+  const groups = {};
+  const sorted = [...expenses].sort((a,b) => new Date(b.datetime) - new Date(a.datetime));
+  sorted.forEach(exp => {
+    const key = formatDateKey(exp.datetime);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(exp);
+  });
+
+  container.innerHTML = '';
+  Object.entries(groups).forEach(([date, exps]) => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'date-group';
+    const dayTotal = exps.reduce((s,e) => s+parseFloat(e.amount||0), 0);
+    groupEl.innerHTML = `<div class="date-label">${date} <span style="margin-left:auto;font-size:12px;color:var(--ink-soft);font-weight:600">${formatCurrency(dayTotal)}</span></div>`;
+    exps.forEach(exp => {
+      groupEl.appendChild(createCard(exp));
+    });
+    container.appendChild(groupEl);
+  });
+}
+
+function createCard(exp) {
+  const div = document.createElement('div');
+  div.className = `expense-card ${exp.category}`;
+  div.innerHTML = `
+    <div class="cat-icon ${exp.category}">${CAT_ICONS[exp.category]||'✦'}</div>
+    <div class="expense-info">
+      <div class="expense-name">${exp.name}</div>
+      <div class="expense-meta">
+        ${exp.location ? `<span>📍 ${exp.location}</span>` : ''}
+        <span>🕐 ${formatTime(exp.datetime)}</span>
+      </div>
+    </div>
+    <div class="expense-amount">${formatCurrency(exp.amount)}</div>`;
+  div.addEventListener('click', () => openEdit(exp.id));
+  return div;
+}
+
+// ─── RENDER SUMMARY ───
+function renderSummary() {
+  const total = getTotal();
+  document.getElementById('summaryTotal').textContent = formatCurrency(total);
+  document.getElementById('summaryCount').textContent = `${expenses.length} expense${expenses.length!==1?'s':''}`;
+
+  // Category breakdown
+  const cats = {};
+  expenses.forEach(e => {
+    cats[e.category] = (cats[e.category]||0) + parseFloat(e.amount||0);
+  });
+
+  const barsEl = document.getElementById('catBars');
+  barsEl.innerHTML = '';
+  Object.entries(cats).sort((a,b) => b[1]-a[1]).forEach(([cat, amt]) => {
+    const pct = total > 0 ? (amt/total*100) : 0;
+    barsEl.innerHTML += `
+      <div class="cat-bar-row">
+        <div class="cat-bar-label">${CAT_ICONS[cat]||'✦'} ${cat}</div>
+        <div class="cat-bar-track">
+          <div class="cat-bar-fill" style="width:${pct}%;background:${CAT_COLORS[cat]||'#8b7d72'}"></div>
+        </div>
+        <div class="cat-bar-amount">${formatCurrency(amt)}</div>
+      </div>`;
+  });
+
+  document.getElementById('splitYou').textContent = formatCurrency(total/2);
+  document.getElementById('splitTogether').textContent = formatCurrency(total);
+}
+
+// ─── TABS ───
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    if (tab.dataset.view === 'summary') renderSummary();
+  });
+});
+
+// ─── FAB + SHEET ───
+const fab = document.getElementById('fab');
+const overlay = document.getElementById('sheetOverlay');
+const addSheet = document.getElementById('addSheet');
+const editSheet = document.getElementById('editSheet');
+
+let activeSheet = null;
+
+function openAddSheet() {
+  activeSheet = addSheet;
+  // Reset form
+  document.getElementById('expName').value = '';
+  document.getElementById('expAmount').value = '';
+  document.getElementById('expLocation').value = '';
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  document.getElementById('expDateTime').value = now.toISOString().slice(0,16);
+  
+  // Reset category
+  selectedCat = 'Food';
+  document.querySelectorAll('#catChips .chip').forEach(c => {
+    c.classList.toggle('selected', c.dataset.cat === 'Food');
+  });
+
+  // Recent suggestions
+  const recent = [...new Set(expenses.slice().reverse().slice(0,8).map(e=>e.name))].slice(0,5);
+  const sugEl = document.getElementById('nameSuggestions');
+  sugEl.innerHTML = recent.map(n => `<button class="suggestion">${n}</button>`).join('');
+  sugEl.querySelectorAll('.suggestion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('expName').value = btn.textContent;
+    });
+  });
+
+  overlay.classList.add('visible');
+  addSheet.classList.add('open');
+  fab.classList.add('open');
+  setTimeout(() => document.getElementById('expAmount').focus(), 350);
+}
+
+function closeSheets() {
+  overlay.classList.remove('visible');
+  addSheet.classList.remove('open');
+  editSheet.classList.remove('open');
+  fab.classList.remove('open');
+  activeSheet = null;
+}
+
+fab.addEventListener('click', () => {
+  if (activeSheet) { closeSheets(); return; }
+  openAddSheet();
+});
+
+overlay.addEventListener('click', closeSheets);
+
+// ─── CATEGORY CHIPS ───
+document.querySelectorAll('#catChips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#catChips .chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+    selectedCat = chip.dataset.cat;
+  });
+});
+
+document.querySelectorAll('#editCatChips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#editCatChips .chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+    editSelectedCat = chip.dataset.cat;
+  });
+});
+
+// ─── GPS ───
+document.getElementById('gpsBtn').addEventListener('click', () => {
+  if (!navigator.geolocation) {
+    showToast('⚠️ Location not supported');
+    return;
+  }
+  document.getElementById('gpsBtn').textContent = '⏳';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      document.getElementById('gpsBtn').textContent = '📍';
+      const lat = pos.coords.latitude.toFixed(4);
+      const lon = pos.coords.longitude.toFixed(4);
+      // Try reverse geocode via public API
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+        .then(r => r.json())
+        .then(data => {
+          const place = data.address?.suburb || data.address?.city_district || data.address?.city || data.address?.town || `${lat}, ${lon}`;
+          document.getElementById('expLocation').value = place;
+        })
+        .catch(() => {
+          document.getElementById('expLocation').value = `${lat}, ${lon}`;
+        });
+    },
+    (err) => {
+      document.getElementById('gpsBtn').textContent = '📍';
+      if (err.code === 1) showToast('📍 Location permission denied');
+      else showToast('📍 Could not get location');
+    },
+    { timeout: 8000 }
+  );
+});
+
+// ─── SAVE ───
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const name = document.getElementById('expName').value.trim();
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  if (!name) { document.getElementById('expName').focus(); shakeField('expName'); return; }
+  if (!amount || amount <= 0) { document.getElementById('expAmount').focus(); shakeField('expAmount'); return; }
+
+  const exp = {
+    id: Date.now().toString(),
+    name,
+    amount,
+    category: selectedCat,
+    location: document.getElementById('expLocation').value.trim(),
+    datetime: document.getElementById('expDateTime').value || new Date().toISOString(),
+  };
+
+  expenses.unshift(exp);
+  save();
+  closeSheets();
+  renderTimeline();
+  showToast('✓ ' + name + ' saved');
+});
+
+// ─── EDIT ───
+function openEdit(id) {
+  const exp = expenses.find(e => e.id === id);
+  if (!exp) return;
+
+  document.getElementById('editId').value = id;
+  document.getElementById('editName').value = exp.name;
+  document.getElementById('editAmount').value = exp.amount;
+  document.getElementById('editLocation').value = exp.location || '';
+
+  const dt = new Date(exp.datetime);
+  dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+  document.getElementById('editDateTime').value = dt.toISOString().slice(0,16);
+
+  editSelectedCat = exp.category;
+  document.querySelectorAll('#editCatChips .chip').forEach(c => {
+    c.classList.toggle('selected', c.dataset.cat === exp.category);
+  });
+
+  activeSheet = editSheet;
+  overlay.classList.add('visible');
+  editSheet.classList.add('open');
+}
+
+document.getElementById('editSaveBtn').addEventListener('click', () => {
+  const id = document.getElementById('editId').value;
+  const name = document.getElementById('editName').value.trim();
+  const amount = parseFloat(document.getElementById('editAmount').value);
+  if (!name || !amount) return;
+
+  const idx = expenses.findIndex(e => e.id === id);
+  if (idx === -1) return;
+  expenses[idx] = {
+    ...expenses[idx],
+    name,
+    amount,
+    category: editSelectedCat,
+    location: document.getElementById('editLocation').value.trim(),
+    datetime: document.getElementById('editDateTime').value,
+  };
+  save();
+  closeSheets();
+  renderTimeline();
+  showToast('✓ Updated');
+});
+
+document.getElementById('deleteBtn').addEventListener('click', () => {
+  const id = document.getElementById('editId').value;
+  const exp = expenses.find(e => e.id === id);
+  if (!exp) return;
+  if (!confirm(`Delete "${exp.name}" (${formatCurrency(exp.amount)})?`)) return;
+  expenses = expenses.filter(e => e.id !== id);
+  save();
+  closeSheets();
+  renderTimeline();
+  showToast('🗑 Deleted');
+});
+
+// ─── TOAST ───
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function shakeField(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = '#e74c3c';
+  el.style.animation = 'none';
+  setTimeout(() => { el.style.borderColor = ''; }, 1200);
+}
+
+// ─── OFFLINE DETECTION ───
+function updateOnline() {
+  document.getElementById('offlineBadge').style.display = navigator.onLine ? 'none' : 'block';
+}
+window.addEventListener('online', updateOnline);
+window.addEventListener('offline', updateOnline);
+updateOnline();
+
+// ─── TRIP NAME FROM URL / DEFAULT ───
+const urlParams = new URLSearchParams(window.location.search);
+const tripName = urlParams.get('trip') || 'Varanasi Trip';
+document.getElementById('tripName').textContent = tripName;
+
+// ─── INIT ───
+renderTimeline();
+</script>
+
+</body>
+</html>
