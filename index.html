@@ -1434,9 +1434,11 @@ window.addEventListener('online',updateOnline);window.addEventListener('offline'
 //  INIT
 // ══════════════════════════════════
 renderHome();
+ window.onload = () => {
   setTimeout(() => {
-  alert(JSON.stringify(localStorage));
-}, 3000);
+    alert(JSON.stringify(localStorage));
+  }, 2000);
+};
 </script>
 </body>
 </html>
