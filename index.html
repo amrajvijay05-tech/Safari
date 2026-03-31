@@ -1,825 +1,756 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Safar — Travel Expense Tracker</title>
+<title>Safar — Smart Travel Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #1a1410;
-    --ink-soft: #4a3f35;
-    --ink-faint: #8b7d72;
-    --paper: #fdf8f2;
-    --paper-warm: #f7f0e6;
-    --paper-card: #fffcf8;
-    --amber: #e8890c;
-    --amber-light: #fbb740;
-    --amber-glow: #fff3d6;
-    --rust: #c4562a;
-    --mint: #2a8c6e;
-    --sky: #2a6b8c;
-    --border: rgba(26,20,16,0.1);
-    --shadow-sm: 0 2px 8px rgba(26,20,16,0.08);
-    --shadow-md: 0 8px 32px rgba(26,20,16,0.14);
-    --shadow-lg: 0 20px 60px rgba(26,20,16,0.2);
-    --radius: 16px;
-    --radius-sm: 10px;
-  }
-
-- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-body {
-font-family: ‘DM Sans’, sans-serif;
-background: var(–paper);
-color: var(–ink);
-min-height: 100vh;
-max-width: 430px;
-margin: 0 auto;
-position: relative;
-overflow-x: hidden;
+:root {
+  --ink: #111008;
+  --ink-soft: #3d3520;
+  --ink-faint: #8a7d6a;
+  --paper: #faf7f2;
+  --paper-warm: #f3ede3;
+  --paper-card: #fffdf9;
+  --amber: #d97706;
+  --amber-bright: #f59e0b;
+  --amber-glow: #fef3c7;
+  --rust: #b45309;
+  --teal: #0d7a6a;
+  --sky: #0369a1;
+  --rose: #be185d;
+  --border: rgba(17,16,8,0.09);
+  --border-strong: rgba(17,16,8,0.18);
+  --shadow-sm: 0 1px 4px rgba(17,16,8,0.07), 0 4px 12px rgba(17,16,8,0.05);
+  --shadow-md: 0 4px 20px rgba(17,16,8,0.12), 0 1px 4px rgba(17,16,8,0.08);
+  --shadow-lg: 0 12px 48px rgba(17,16,8,0.18);
+  --r: 18px; --r-sm: 12px; --r-full: 100px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
 
-/* Subtle paper texture */
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘400’ height=‘400’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3CfeColorMatrix type=‘saturate’ values=‘0’/%3E%3C/filter%3E%3Crect width=‘400’ height=‘400’ filter=‘url(%23n)’ opacity=‘0.025’/%3E%3C/svg%3E”);
-pointer-events: none;
-z-index: 0;
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.screen.active{display:flex;}
+
+/* ── SCROLL CONTAINER ── */
+.scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:100px;}
+
+/* ════════════════════════════
+   HOME SCREEN
+════════════════════════════ */
+.home-header{
+  padding:52px 22px 20px;
+  background:var(--ink);
+  color:var(--paper);
+  position:relative;
+  overflow:hidden;
 }
-
-/* ─── HEADER ─── */
-.header {
-position: sticky;
-top: 0;
-z-index: 100;
-background: var(–paper);
-border-bottom: 1px solid var(–border);
-padding: 16px 20px 14px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-backdrop-filter: blur(12px);
+.home-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% -20%, rgba(217,119,6,0.35) 0%, transparent 60%);
 }
-
-.header-brand {
-display: flex;
-flex-direction: column;
-gap: 1px;
+.home-greeting{
+  font-size:12px;font-weight:500;letter-spacing:1.2px;
+  text-transform:uppercase;opacity:0.5;margin-bottom:6px;
 }
-
-.brand-name {
-font-family: ‘Lora’, serif;
-font-size: 22px;
-font-weight: 600;
-color: var(–ink);
-letter-spacing: -0.3px;
-line-height: 1;
+.home-title{
+  font-family:'Fraunces',serif;font-size:32px;font-weight:700;
+  line-height:1.1;position:relative;z-index:1;
 }
+.home-title span{color:var(--amber-bright);}
+.home-subtitle{font-size:13px;opacity:0.45;margin-top:6px;position:relative;z-index:1;}
 
-.brand-sub {
-font-size: 11px;
-font-weight: 400;
-color: var(–ink-faint);
-letter-spacing: 0.8px;
-text-transform: uppercase;
+.home-stats{
+  display:flex;gap:10px;padding:16px 22px 0;position:relative;z-index:1;
 }
-
-.total-pill {
-background: var(–ink);
-color: var(–paper);
-border-radius: 100px;
-padding: 8px 16px;
-display: flex;
-flex-direction: column;
-align-items: flex-end;
-gap: 1px;
+.home-stat{
+  flex:1;background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--r-sm);padding:12px;
 }
+.home-stat-val{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--paper);}
+.home-stat-lbl{font-size:10px;opacity:0.45;text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;}
 
-.total-label {
-font-size: 9px;
-font-weight: 500;
-letter-spacing: 1px;
-text-transform: uppercase;
-opacity: 0.6;
+.trips-section{padding:20px 22px;}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
 }
-
-.total-amount {
-font-family: ‘Lora’, serif;
-font-size: 18px;
-font-weight: 600;
-line-height: 1;
+.section-title{
+  font-size:12px;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;color:var(--ink-faint);
 }
-
-/* ─── TABS ─── */
-.tabs {
-display: flex;
-gap: 4px;
-padding: 12px 20px 0;
-background: var(–paper);
-position: sticky;
-top: 72px;
-z-index: 99;
+.new-trip-btn{
+  display:flex;align-items:center;gap:6px;
+  background:var(--amber);color:white;
+  border:none;border-radius:var(--r-full);
+  padding:8px 16px;font-size:13px;font-weight:600;
+  font-family:'DM Sans',sans-serif;cursor:pointer;
+  box-shadow:0 4px 12px rgba(217,119,6,0.3);
+  transition:transform 0.15s;
 }
+.new-trip-btn:active{transform:scale(0.96);}
 
-.tab {
-flex: 1;
-padding: 10px 8px;
-border: none;
-background: transparent;
-border-bottom: 2px solid transparent;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 13px;
-font-weight: 500;
-color: var(–ink-faint);
-cursor: pointer;
-transition: all 0.2s;
-text-align: center;
+/* Trip Card */
+.trip-card{
+  background:var(--paper-card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:18px;
+  margin-bottom:12px;
+  cursor:pointer;
+  box-shadow:var(--shadow-sm);
+  transition:transform 0.15s,box-shadow 0.15s;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
 }
-
-.tab.active {
-color: var(–amber);
-border-bottom-color: var(–amber);
+.trip-card:active{transform:scale(0.985);box-shadow:none;}
+.trip-card-accent{
+  position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;
 }
-
-/* ─── VIEWS ─── */
-.view { display: none; padding: 16px 20px 120px; }
-.view.active { display: block; }
-
-/* ─── DATE GROUP ─── */
-.date-group { margin-bottom: 24px; }
-
-.date-label {
-font-size: 11px;
-font-weight: 600;
-color: var(–ink-faint);
-text-transform: uppercase;
-letter-spacing: 1px;
-margin-bottom: 10px;
-display: flex;
-align-items: center;
-gap: 8px;
+.trip-emoji{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
 }
-
-.date-label::after {
-content: ‘’;
-flex: 1;
-height: 1px;
-background: var(–border);
+.trip-info{flex:1;min-width:0;}
+.trip-name{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.trip-meta{font-size:12px;color:var(--ink-faint);display:flex;gap:8px;align-items:center;}
+.trip-total{
+  font-family:'Fraunces',serif;font-size:20px;font-weight:600;
+  color:var(--ink);flex-shrink:0;
 }
+.trip-arrow{font-size:16px;opacity:0.3;flex-shrink:0;}
 
-/* ─── EXPENSE CARD ─── */
-.expense-card {
-background: var(–paper-card);
-border: 1px solid var(–border);
-border-radius: var(–radius);
-padding: 14px 16px;
-margin-bottom: 8px;
-display: flex;
-align-items: center;
-gap: 12px;
-box-shadow: var(–shadow-sm);
-cursor: pointer;
-transition: transform 0.15s, box-shadow 0.15s;
-position: relative;
-overflow: hidden;
+.empty-trips{
+  text-align:center;padding:48px 20px;color:var(--ink-faint);
 }
+.empty-trips-icon{font-size:56px;margin-bottom:16px;opacity:0.5;}
+.empty-trips-title{font-family:'Fraunces',serif;font-size:22px;color:var(--ink-soft);margin-bottom:8px;}
+.empty-trips-sub{font-size:14px;line-height:1.6;}
 
-.expense-card::before {
-content: ‘’;
-position: absolute;
-left: 0;
-top: 0;
-bottom: 0;
-width: 3px;
-border-radius: 3px 0 0 3px;
+/* ════════════════════════════
+   TRIP SCREEN
+════════════════════════════ */
+.trip-header{
+  padding:52px 20px 0;
+  position:relative;
+  flex-shrink:0;
 }
-
-.expense-card.Food::before { background: var(–amber); }
-.expense-card.Travel::before { background: var(–sky); }
-.expense-card.Misc::before { background: var(–ink-faint); }
-.expense-card.Stay::before { background: var(–mint); }
-.expense-card.Shopping::before { background: var(–rust); }
-
-.expense-card:active { transform: scale(0.98); box-shadow: var(–shadow-sm); }
-
-.cat-icon {
-width: 40px;
-height: 40px;
-border-radius: 12px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 18px;
-flex-shrink: 0;
+.back-btn{
+  display:flex;align-items:center;gap:6px;
+  background:none;border:none;
+  font-family:'DM Sans',sans-serif;font-size:14px;
+  color:var(--ink-faint);cursor:pointer;
+  padding:0;margin-bottom:12px;
 }
-
-.cat-icon.Food { background: var(–amber-glow); }
-.cat-icon.Travel { background: #e3f0f8; }
-.cat-icon.Misc { background: #f0ece8; }
-.cat-icon.Stay { background: #e3f4ef; }
-.cat-icon.Shopping { background: #fceee9; }
-
-.expense-info { flex: 1; min-width: 0; }
-
-.expense-name {
-font-size: 15px;
-font-weight: 500;
-color: var(–ink);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-margin-bottom: 3px;
+.trip-header-top{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:4px;
 }
-
-.expense-meta {
-font-size: 11px;
-color: var(–ink-faint);
-display: flex;
-align-items: center;
-gap: 6px;
+.trip-header-name{
+  font-family:'Fraunces',serif;font-size:26px;font-weight:700;
+  color:var(--ink);line-height:1.1;
 }
-
-.expense-meta span { display: flex; align-items: center; gap: 3px; }
-
-.expense-amount {
-font-family: ‘Lora’, serif;
-font-size: 17px;
-font-weight: 600;
-color: var(–ink);
-flex-shrink: 0;
+.trip-header-emoji{font-size:28px;}
+.trip-total-pill{
+  background:var(--ink);color:var(--paper);
+  border-radius:var(--r-full);padding:8px 16px;
+  display:flex;flex-direction:column;align-items:flex-end;gap:1px;
+  flex-shrink:0;margin-left:12px;margin-top:4px;
 }
+.trip-total-label{font-size:9px;font-weight:500;letter-spacing:1px;text-transform:uppercase;opacity:0.55;}
+.trip-total-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;line-height:1;}
 
-/* ─── EMPTY STATE ─── */
-.empty-state {
-text-align: center;
-padding: 60px 20px;
-color: var(–ink-faint);
+.trip-tabs{
+  display:flex;gap:0;padding:14px 20px 0;
+  flex-shrink:0;
+  border-bottom:1px solid var(--border);
 }
-
-.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
-
-.empty-title {
-font-family: ‘Lora’, serif;
-font-size: 20px;
-color: var(–ink-soft);
-margin-bottom: 8px;
+.trip-tab{
+  flex:1;padding:10px 8px;border:none;
+  background:transparent;border-bottom:2px solid transparent;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  color:var(--ink-faint);cursor:pointer;transition:all 0.2s;text-align:center;
 }
+.trip-tab.active{color:var(--amber);border-bottom-color:var(--amber);}
 
-.empty-sub { font-size: 14px; line-height: 1.6; }
-
-/* ─── SUMMARY VIEW ─── */
-.summary-card {
-background: var(–ink);
-color: var(–paper);
-border-radius: var(–radius);
-padding: 24px 20px;
-margin-bottom: 16px;
-position: relative;
-overflow: hidden;
+/* Timeline */
+.date-group{margin-bottom:24px;}
+.date-label{
+  font-size:11px;font-weight:600;color:var(--ink-faint);
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
 }
+.date-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.date-day-total{font-size:12px;color:var(--ink-soft);font-weight:600;margin-left:auto;}
 
-.summary-card::after {
-content: ‘₹’;
-position: absolute;
-right: -10px;
-top: -20px;
-font-family: ‘Lora’, serif;
-font-size: 120px;
-opacity: 0.06;
-color: var(–amber-light);
+.expense-card{
+  background:var(--paper-card);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+  margin-bottom:8px;display:flex;align-items:center;gap:12px;
+  box-shadow:var(--shadow-sm);cursor:pointer;
+  transition:transform 0.15s;position:relative;overflow:hidden;
 }
+.expense-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;border-radius:3px 0 0 3px;
+}
+.expense-card.Food::before{background:#d97706;}
+.expense-card.Travel::before{background:#0369a1;}
+.expense-card.Stay::before{background:#0d7a6a;}
+.expense-card.Shopping::before{background:#be185d;}
+.expense-card.Misc::before{background:#8a7d6a;}
+.expense-card:active{transform:scale(0.985);}
 
-.summary-total-label {
-font-size: 11px;
-font-weight: 500;
-letter-spacing: 1.2px;
-text-transform: uppercase;
-opacity: 0.5;
-margin-bottom: 8px;
+.cat-icon{
+  width:42px;height:42px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;flex-shrink:0;
 }
+.cat-icon.Food{background:#fef3c7;}
+.cat-icon.Travel{background:#e0f2fe;}
+.cat-icon.Stay{background:#d1fae5;}
+.cat-icon.Shopping{background:#fce7f3;}
+.cat-icon.Misc{background:#f3ede3;}
 
-.summary-total-amount {
-font-family: ‘Lora’, serif;
-font-size: 42px;
-font-weight: 600;
-margin-bottom: 4px;
-}
+.expense-info{flex:1;min-width:0;}
+.expense-name{font-size:15px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.expense-meta{font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.expense-amount{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--ink);flex-shrink:0;}
 
-.summary-count {
-font-size: 12px;
-opacity: 0.5;
-}
+.empty-timeline{text-align:center;padding:60px 20px;color:var(--ink-faint);}
+.empty-timeline-icon{font-size:48px;margin-bottom:16px;opacity:0.4;}
+.empty-timeline-title{font-family:'Fraunces',serif;font-size:20px;color:var(--ink-soft);margin-bottom:8px;}
 
-.summary-section-title {
-font-size: 12px;
-font-weight: 600;
-letter-spacing: 1px;
-text-transform: uppercase;
-color: var(–ink-faint);
-margin: 20px 0 10px;
+/* ── SUMMARY ── */
+.summary-hero{
+  background:var(--ink);color:var(--paper);
+  border-radius:var(--r);padding:22px 20px;
+  margin-bottom:16px;position:relative;overflow:hidden;
 }
+.summary-hero::after{
+  content:'₹';position:absolute;right:-8px;top:-16px;
+  font-family:'Fraunces',serif;font-size:130px;opacity:0.05;
+}
+.summary-hero-label{font-size:10px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;opacity:0.45;margin-bottom:6px;}
+.summary-hero-amount{font-family:'Fraunces',serif;font-size:46px;font-weight:700;line-height:1;}
+.summary-hero-count{font-size:12px;opacity:0.4;margin-top:4px;}
 
-.cat-bar-row {
-display: flex;
-align-items: center;
-gap: 10px;
-margin-bottom: 10px;
+/* Donut chart */
+.donut-wrap{
+  background:var(--paper-card);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;margin-bottom:12px;
+  display:flex;align-items:center;gap:20px;
+  box-shadow:var(--shadow-sm);
 }
+.donut-svg-wrap{flex-shrink:0;width:100px;height:100px;position:relative;}
+.donut-center{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;
+}
+.donut-center-val{font-size:16px;font-weight:700;color:var(--ink);}
+.donut-center-lbl{font-size:9px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.5px;}
+.donut-legend{flex:1;}
+.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-name{font-size:12px;color:var(--ink-soft);flex:1;}
+.legend-pct{font-size:12px;font-weight:600;color:var(--ink);}
 
-.cat-bar-label {
-font-size: 13px;
-color: var(–ink-soft);
-width: 70px;
-flex-shrink: 0;
-display: flex;
-align-items: center;
-gap: 6px;
+/* Day trend */
+.trend-card{
+  background:var(--paper-card);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;margin-bottom:12px;
+  box-shadow:var(--shadow-sm);
 }
+.trend-title{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:16px;}
+.trend-bars{display:flex;align-items:flex-end;gap:6px;height:64px;}
+.trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.trend-bar{
+  width:100%;background:var(--amber);border-radius:4px 4px 0 0;
+  min-height:4px;transition:height 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.trend-bar.max-bar{background:var(--ink);}
+.trend-bar-lbl{font-size:9px;color:var(--ink-faint);text-align:center;white-space:nowrap;}
 
-.cat-bar-track {
-flex: 1;
-height: 8px;
-background: var(–paper-warm);
-border-radius: 4px;
-overflow: hidden;
+/* Highlights */
+.highlight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.highlight-card{
+  background:var(--paper-card);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:14px;box-shadow:var(--shadow-sm);
 }
-
-.cat-bar-fill {
-height: 100%;
-border-radius: 4px;
-transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.cat-bar-amount {
-font-family: ‘Lora’, serif;
-font-size: 13px;
-font-weight: 600;
-color: var(–ink);
-width: 64px;
-text-align: right;
-flex-shrink: 0;
-}
+.highlight-icon{font-size:22px;margin-bottom:6px;}
+.highlight-label{font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;}
+.highlight-val{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--ink);}
+.highlight-sub{font-size:11px;color:var(--ink-faint);margin-top:2px;}
 
 /* Split */
-.split-card {
-background: var(–paper-card);
-border: 1px solid var(–border);
-border-radius: var(–radius);
-padding: 18px;
-margin-top: 8px;
-display: flex;
-align-items: center;
-gap: 12px;
+.split-card{
+  background:var(--paper-card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:var(--shadow-sm);margin-bottom:12px;
+}
+.split-person{flex:1;text-align:center;}
+.split-name{font-size:12px;color:var(--ink-faint);margin-bottom:4px;}
+.split-amount{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--ink);}
+.split-divider{font-size:22px;color:var(--border);font-weight:300;}
+
+/* AI Buddy */
+.buddy-card{
+  background:linear-gradient(135deg,#111008 0%,#2d1f0a 100%);
+  border-radius:var(--r);padding:18px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.buddy-card::before{
+  content:'';position:absolute;
+  top:-30px;right:-30px;width:120px;height:120px;
+  background:radial-gradient(circle,rgba(245,158,11,0.25) 0%,transparent 70%);
+}
+.buddy-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.buddy-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--amber);display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.buddy-name-wrap{}
+.buddy-name{font-size:14px;font-weight:600;color:var(--paper);}
+.buddy-status{font-size:11px;color:rgba(255,255,255,0.4);}
+.buddy-summary-text{
+  font-size:14px;line-height:1.7;color:rgba(255,255,255,0.75);
+  font-style:italic;
 }
 
-.split-person {
-flex: 1;
-text-align: center;
+/* ════════════════════════════
+   AI BUDDY FLOAT BUTTON
+════════════════════════════ */
+.buddy-float{
+  position:fixed;bottom:100px;right:20px;
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#111008,#2d1f0a);
+  border:2px solid rgba(245,158,11,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;cursor:pointer;z-index:200;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3),0 0 0 0 rgba(245,158,11,0.4);
+  animation:buddyPulse 3s infinite;
+  transition:transform 0.2s;
+}
+.buddy-float:active{transform:scale(0.92);}
+@keyframes buddyPulse{
+  0%,100%{box-shadow:0 4px 20px rgba(0,0,0,0.3),0 0 0 0 rgba(245,158,11,0.4);}
+  50%{box-shadow:0 4px 20px rgba(0,0,0,0.3),0 0 0 8px rgba(245,158,11,0);}
 }
 
-.split-name {
-font-size: 12px;
-color: var(–ink-faint);
-margin-bottom: 4px;
+/* ── FAB ── */
+.fab{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%);
+  width:62px;height:62px;border-radius:50%;
+  background:var(--amber);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(217,119,6,0.45);
+  z-index:200;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  max-width:430px;
+}
+.fab:active{transform:translateX(-50%) scale(0.91);}
+.fab svg{transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);}
+.fab.open svg{transform:rotate(45deg);}
+
+/* ════════════════════════════
+   BOTTOM SHEET
+════════════════════════════ */
+.overlay{
+  position:fixed;inset:0;background:rgba(17,16,8,0.5);
+  z-index:300;opacity:0;pointer-events:none;
+  transition:opacity 0.3s;backdrop-filter:blur(6px);
+}
+.overlay.on{opacity:1;pointer-events:all;}
+
+.sheet{
+  position:fixed;bottom:0;left:50%;
+  transform:translateX(-50%) translateY(105%);
+  width:100%;max-width:430px;
+  background:var(--paper-card);
+  border-radius:24px 24px 0 0;
+  z-index:400;
+  transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);
+  box-shadow:0 -8px 40px rgba(17,16,8,0.2);
+  max-height:92vh;overflow-y:auto;
+  padding:0 22px 48px;
+}
+.sheet.on{transform:translateX(-50%) translateY(0);}
+.sheet-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:12px auto 22px;}
+.sheet-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--ink);margin-bottom:22px;}
+
+/* Form */
+.field{margin-bottom:16px;}
+.field-label{font-size:11px;font-weight:600;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;display:block;}
+.field-input{
+  width:100%;padding:14px 16px;
+  border:1.5px solid var(--border-strong);
+  border-radius:var(--r-sm);
+  font-family:'DM Sans',sans-serif;font-size:16px;
+  color:var(--ink);background:var(--paper);
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+  -webkit-appearance:none;
+}
+.field-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(217,119,6,0.12);}
+.amount-wrap{position:relative;}
+.amount-prefix{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink-soft);pointer-events:none;}
+.field-input.amount{padding-left:36px;font-family:'Fraunces',serif;font-size:26px;font-weight:700;}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap;}
+.chip{
+  padding:8px 14px;border-radius:var(--r-full);
+  border:1.5px solid var(--border-strong);
+  font-size:13px;font-weight:500;cursor:pointer;
+  background:var(--paper);color:var(--ink-soft);
+  transition:all 0.15s;display:flex;align-items:center;gap:5px;
+}
+.chip.sel{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+.suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.sug-btn{
+  padding:6px 12px;background:var(--paper-warm);
+  border-radius:var(--r-full);font-size:12px;cursor:pointer;
+  color:var(--ink-soft);border:none;font-family:'DM Sans',sans-serif;
+}
+.sug-btn:active{background:var(--amber-glow);}
+
+.loc-row{display:flex;gap:8px;}
+.loc-row .field-input{flex:1;}
+.loc-btn{
+  width:50px;height:50px;border-radius:var(--r-sm);
+  border:1.5px solid var(--border-strong);background:var(--paper);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;flex-shrink:0;
+}
+.loc-btn:active{background:var(--amber-glow);border-color:var(--amber);}
+
+.save-btn{
+  width:100%;padding:18px;background:var(--amber);
+  color:white;border:none;border-radius:var(--r);
+  font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;
+  cursor:pointer;margin-top:8px;
+  box-shadow:0 4px 16px rgba(217,119,6,0.35);
+  transition:transform 0.15s;
+}
+.save-btn:active{transform:scale(0.98);}
+
+.edit-actions{display:flex;gap:10px;margin-top:8px;}
+.edit-save{
+  flex:1;padding:16px;background:var(--ink);color:var(--paper);
+  border:none;border-radius:var(--r);
+  font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;
+}
+.del-btn{
+  padding:16px 20px;background:transparent;
+  border:1.5px solid rgba(220,38,38,0.25);color:#dc2626;
+  border-radius:var(--r);font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:500;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
 }
 
-.split-amount {
-font-family: ‘Lora’, serif;
-font-size: 24px;
-font-weight: 600;
-color: var(–ink);
+/* New Trip Sheet */
+.color-picks{display:flex;gap:8px;flex-wrap:wrap;}
+.color-pick{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:transform 0.15s;
+}
+.color-pick.sel{border-color:var(--ink);transform:scale(1.15);}
+.emoji-picks{display:flex;gap:8px;flex-wrap:wrap;}
+.emoji-pick{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--paper-warm);border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;cursor:pointer;transition:all 0.15s;
+}
+.emoji-pick.sel{background:var(--amber-glow);border-color:var(--amber);}
+
+/* ════════════════════════════
+   BUDDY SHEET
+════════════════════════════ */
+.buddy-sheet-avatar{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,#111008,#2d1f0a);
+  border:3px solid var(--amber);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin:0 auto 12px;
+}
+.buddy-sheet-name{text-align:center;font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-bottom:4px;}
+.buddy-sheet-hint{text-align:center;font-size:13px;color:var(--ink-faint);margin-bottom:20px;line-height:1.5;}
+
+.buddy-examples{margin-bottom:18px;}
+.buddy-ex-label{font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;}
+.buddy-ex-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.buddy-ex-chip{
+  padding:7px 12px;background:var(--paper-warm);border-radius:var(--r-full);
+  font-size:12px;color:var(--ink-soft);cursor:pointer;border:none;
+  font-family:'DM Sans',sans-serif;
+}
+.buddy-ex-chip:active{background:var(--amber-glow);}
+
+.buddy-input-row{display:flex;gap:8px;align-items:center;}
+.buddy-text-input{
+  flex:1;padding:14px 16px;border:1.5px solid var(--border-strong);
+  border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;
+  font-size:15px;color:var(--ink);background:var(--paper);
+  outline:none;
+}
+.buddy-text-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(217,119,6,0.12);}
+.buddy-voice-btn{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--amber);border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;cursor:pointer;flex-shrink:0;
+  box-shadow:0 4px 12px rgba(217,119,6,0.35);
+  transition:transform 0.15s;
+}
+.buddy-voice-btn.listening{
+  background:#dc2626;
+  animation:listeningPulse 1s infinite;
+}
+@keyframes listeningPulse{
+  0%,100%{box-shadow:0 4px 12px rgba(220,38,38,0.4),0 0 0 0 rgba(220,38,38,0.3);}
+  50%{box-shadow:0 4px 12px rgba(220,38,38,0.4),0 0 0 10px rgba(220,38,38,0);}
+}
+.buddy-send-btn{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--ink);border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;flex-shrink:0;
 }
 
-.split-divider {
-font-size: 20px;
-color: var(–border);
+.buddy-response{
+  margin-top:16px;background:var(--paper-warm);
+  border-radius:var(--r-sm);padding:14px;
+  font-size:14px;line-height:1.6;color:var(--ink-soft);
+  display:none;
+}
+.buddy-response.show{display:block;}
+.buddy-confirm-btn{
+  width:100%;padding:16px;background:var(--amber);
+  color:white;border:none;border-radius:var(--r);
+  font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;
+  cursor:pointer;margin-top:10px;display:none;
+}
+.buddy-confirm-btn.show{display:block;}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;top:88px;left:50%;
+  transform:translateX(-50%) translateY(-12px);
+  background:var(--ink);color:var(--paper);
+  padding:11px 20px;border-radius:var(--r-full);
+  font-size:14px;font-weight:500;z-index:999;
+  opacity:0;pointer-events:none;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── OFFLINE ── */
+.offline-bar{
+  position:fixed;top:0;left:0;right:0;
+  background:#dc2626;color:white;
+  text-align:center;font-size:11px;font-weight:600;
+  padding:5px;z-index:998;display:none;
+  max-width:430px;margin:0 auto;
 }
 
-/* ─── FAB ─── */
-.fab {
-position: fixed;
-bottom: 28px;
-right: 50%;
-transform: translateX(50%);
-width: 64px;
-height: 64px;
-background: var(–amber);
-border-radius: 50%;
-border: none;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 4px 20px rgba(232,137,12,0.45), 0 1px 4px rgba(232,137,12,0.3);
-z-index: 200;
-transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
-max-width: 430px;
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
 }
-
-.fab:active { transform: translateX(50%) scale(0.92); }
-
-.fab svg { transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.fab.open svg { transform: rotate(45deg); }
-
-/* ─── BOTTOM SHEET ─── */
-.sheet-overlay {
-position: fixed;
-inset: 0;
-background: rgba(26,20,16,0.4);
-z-index: 300;
-opacity: 0;
-pointer-events: none;
-transition: opacity 0.3s;
-backdrop-filter: blur(4px);
-}
-
-.sheet-overlay.visible { opacity: 1; pointer-events: all; }
-
-.bottom-sheet {
-position: fixed;
-bottom: 0;
-left: 50%;
-transform: translateX(-50%) translateY(100%);
-width: 100%;
-max-width: 430px;
-background: var(–paper-card);
-border-radius: 24px 24px 0 0;
-z-index: 400;
-padding: 0 20px 40px;
-transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-box-shadow: 0 -8px 40px rgba(26,20,16,0.18);
-max-height: 92vh;
-overflow-y: auto;
-}
-
-.bottom-sheet.open { transform: translateX(-50%) translateY(0); }
-
-.sheet-handle {
-width: 36px;
-height: 4px;
-background: var(–border);
-border-radius: 2px;
-margin: 12px auto 20px;
-}
-
-.sheet-title {
-font-family: ‘Lora’, serif;
-font-size: 20px;
-font-weight: 600;
-color: var(–ink);
-margin-bottom: 20px;
-}
-
-/* ─── FORM ─── */
-.field { margin-bottom: 16px; }
-
-.field-label {
-font-size: 11px;
-font-weight: 600;
-color: var(–ink-faint);
-text-transform: uppercase;
-letter-spacing: 0.8px;
-margin-bottom: 6px;
-display: block;
-}
-
-.field-input {
-width: 100%;
-padding: 14px 16px;
-border: 1.5px solid var(–border);
-border-radius: var(–radius-sm);
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-color: var(–ink);
-background: var(–paper);
-outline: none;
-transition: border-color 0.2s, box-shadow 0.2s;
--webkit-appearance: none;
-}
-
-.field-input:focus {
-border-color: var(–amber);
-box-shadow: 0 0 0 3px rgba(232,137,12,0.12);
-}
-
-.amount-wrap { position: relative; }
-
-.amount-prefix {
-position: absolute;
-left: 16px;
-top: 50%;
-transform: translateY(-50%);
-font-family: ‘Lora’, serif;
-font-size: 18px;
-font-weight: 600;
-color: var(–ink-soft);
-pointer-events: none;
-}
-
-.field-input.amount { padding-left: 34px; font-family: ‘Lora’, serif; font-size: 24px; font-weight: 600; }
-
-/* Category chips */
-.chips { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.chip {
-padding: 8px 14px;
-border-radius: 100px;
-border: 1.5px solid var(–border);
-font-size: 13px;
-font-weight: 500;
-cursor: pointer;
-background: var(–paper);
-color: var(–ink-soft);
-transition: all 0.15s;
-display: flex;
-align-items: center;
-gap: 5px;
-}
-
-.chip.selected { background: var(–ink); color: var(–paper); border-color: var(–ink); }
-
-/* Suggestions */
-.suggestions { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.suggestion {
-padding: 6px 12px;
-background: var(–paper-warm);
-border-radius: 100px;
-font-size: 12px;
-cursor: pointer;
-color: var(–ink-soft);
-transition: background 0.15s;
-border: none;
-}
-
-.suggestion:active { background: var(–amber-glow); }
-
-.location-row { display: flex; gap: 8px; }
-.location-row .field-input { flex: 1; }
-.location-btn {
-width: 50px;
-height: 50px;
-border-radius: var(–radius-sm);
-border: 1.5px solid var(–border);
-background: var(–paper);
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-font-size: 18px;
-flex-shrink: 0;
-transition: all 0.15s;
-}
-
-.location-btn:active { background: var(–amber-glow); border-color: var(–amber); }
-
-.save-btn {
-width: 100%;
-padding: 18px;
-background: var(–amber);
-color: white;
-border: none;
-border-radius: var(–radius);
-font-family: ‘DM Sans’, sans-serif;
-font-size: 17px;
-font-weight: 600;
-cursor: pointer;
-margin-top: 8px;
-box-shadow: 0 4px 16px rgba(232,137,12,0.35);
-transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.save-btn:active { transform: scale(0.98); box-shadow: 0 2px 8px rgba(232,137,12,0.25); }
-
-/* Edit sheet */
-.edit-actions {
-display: flex;
-gap: 10px;
-margin-top: 8px;
-}
-
-.edit-save-btn {
-flex: 1;
-padding: 16px;
-background: var(–ink);
-color: var(–paper);
-border: none;
-border-radius: var(–radius);
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-font-weight: 600;
-cursor: pointer;
-transition: opacity 0.15s;
-}
-
-.delete-btn {
-padding: 16px 20px;
-background: transparent;
-border: 1.5px solid #e74c3c33;
-color: #e74c3c;
-border-radius: var(–radius);
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-font-weight: 500;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 6px;
-}
-
-/* ─── TOAST ─── */
-.toast {
-position: fixed;
-top: 90px;
-left: 50%;
-transform: translateX(-50%) translateY(-20px);
-background: var(–ink);
-color: var(–paper);
-padding: 12px 20px;
-border-radius: 100px;
-font-size: 14px;
-font-weight: 500;
-z-index: 999;
-opacity: 0;
-pointer-events: none;
-transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-display: flex;
-align-items: center;
-gap: 8px;
-white-space: nowrap;
-}
-
-.toast.show {
-opacity: 1;
-transform: translateX(-50%) translateY(0);
-}
-
-/* ─── OFFLINE BADGE ─── */
-.offline-badge {
-position: fixed;
-top: 10px;
-left: 50%;
-transform: translateX(-50%);
-background: #e74c3c;
-color: white;
-font-size: 11px;
-font-weight: 600;
-padding: 4px 12px;
-border-radius: 100px;
-z-index: 999;
-display: none;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-.expense-card { animation: fadeInUp 0.25s ease forwards; }
-
-@keyframes tickPop {
-0% { transform: scale(0); }
-60% { transform: scale(1.2); }
-100% { transform: scale(1); }
-}
-
-.tick-anim { animation: tickPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.expense-card,.trip-card{animation:fadeUp 0.22s ease forwards;}
 </style>
-
 </head>
 <body>
 
-<!-- Offline badge -->
+<div class="offline-bar" id="offlineBar">📴 Offline — data saved locally</div>
+<div class="toast" id="toast"></div>
 
-<div class="offline-badge" id="offlineBadge">📴 Offline — saving locally</div>
-
-<!-- Toast -->
-
-<div class="toast" id="toast">✓ Expense saved</div>
-
-<!-- Header -->
-
-<header class="header">
-  <div class="header-brand">
-    <div class="brand-name">Safar</div>
-    <div class="brand-sub" id="tripName">Trip Tracker</div>
-  </div>
-  <div class="total-pill">
-    <span class="total-label">Total</span>
-    <span class="total-amount" id="headerTotal">₹0</span>
-  </div>
-</header>
-
-<!-- Tabs -->
-
-<div class="tabs">
-  <button class="tab active" data-view="timeline">Timeline</button>
-  <button class="tab" data-view="summary">Summary</button>
-</div>
-
-<!-- Timeline View -->
-
-<div class="view active" id="view-timeline">
-  <div id="timelineContent"></div>
-</div>
-
-<!-- Summary View -->
-
-<div class="view" id="view-summary">
-  <div class="summary-card">
-    <div class="summary-total-label">Total Spent</div>
-    <div class="summary-total-amount" id="summaryTotal">₹0</div>
-    <div class="summary-count" id="summaryCount">0 expenses</div>
-  </div>
-
-  <div class="summary-section-title">By Category</div>
-  <div id="catBars"></div>
-
-  <div class="summary-section-title">Split (2 people)</div>
-  <div class="split-card">
-    <div class="split-person">
-      <div class="split-name">You</div>
-      <div class="split-amount" id="splitYou">₹0</div>
+<!-- ══════════════════════════════
+     HOME SCREEN
+══════════════════════════════ -->
+<div class="screen active" id="screenHome">
+  <div class="home-header">
+    <div class="home-greeting">Good to see you 👋</div>
+    <div class="home-title">Your <span>Trips</span></div>
+    <div class="home-subtitle">Tap a trip to view expenses</div>
+    <div class="home-stats">
+      <div class="home-stat">
+        <div class="home-stat-val" id="homeTotalTrips">0</div>
+        <div class="home-stat-lbl">Trips</div>
+      </div>
+      <div class="home-stat">
+        <div class="home-stat-val" id="homeTotalSpent">₹0</div>
+        <div class="home-stat-lbl">All time</div>
+      </div>
+      <div class="home-stat">
+        <div class="home-stat-val" id="homeTotalExp">0</div>
+        <div class="home-stat-lbl">Expenses</div>
+      </div>
     </div>
-    <div class="split-divider">÷</div>
-    <div class="split-person">
-      <div class="split-name">Together</div>
-      <div class="split-amount" id="splitTogether">₹0</div>
+  </div>
+  <div class="scroll-body">
+    <div class="trips-section">
+      <div class="section-header">
+        <div class="section-title">All Trips</div>
+        <button class="new-trip-btn" id="newTripBtn">+ New Trip</button>
+      </div>
+      <div id="tripsContainer"></div>
     </div>
   </div>
 </div>
 
-<!-- Sheet Overlay -->
+<!-- ══════════════════════════════
+     TRIP SCREEN
+══════════════════════════════ -->
+<div class="screen" id="screenTrip">
+  <div class="trip-header">
+    <button class="back-btn" id="backBtn">← All Trips</button>
+    <div class="trip-header-top">
+      <div>
+        <div class="trip-header-name" id="tripHeaderName">Trip</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="trip-header-emoji" id="tripHeaderEmoji"></div>
+        <div class="trip-total-pill">
+          <span class="trip-total-label">Total</span>
+          <span class="trip-total-val" id="tripTotalVal">₹0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="trip-tabs">
+    <button class="trip-tab active" data-tab="timeline">Timeline</button>
+    <button class="trip-tab" data-tab="summary">Summary</button>
+  </div>
+  <div class="scroll-body" id="tripScrollBody">
+    <div style="padding:16px 20px 0" id="tabTimeline">
+      <div id="timelineContent"></div>
+    </div>
+    <div style="padding:16px 20px 0;display:none;" id="tabSummary">
+      <div id="summaryContent"></div>
+    </div>
+  </div>
+  <!-- FAB -->
+  <button class="fab" id="fab">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <!-- Buddy Float -->
+  <button class="buddy-float" id="buddyFloat" title="Ask Dost">🤖</button>
+</div>
 
-<div class="sheet-overlay" id="sheetOverlay"></div>
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
 
-<!-- Add Expense Sheet -->
+<!-- ══ SHEET: NEW TRIP ══ -->
+<div class="sheet" id="sheetNewTrip">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">New Trip</div>
+  <div class="field">
+    <label class="field-label">Trip Name</label>
+    <input type="text" class="field-input" id="ntName" placeholder="e.g. Goa Trip, Wedding, Varanasi…">
+  </div>
+  <div class="field">
+    <label class="field-label">Pick an Emoji</label>
+    <div class="emoji-picks" id="ntEmojis">
+      <div class="emoji-pick sel" data-e="🏔">🏔</div>
+      <div class="emoji-pick" data-e="🏖">🏖</div>
+      <div class="emoji-pick" data-e="🛕">🛕</div>
+      <div class="emoji-pick" data-e="🎊">🎊</div>
+      <div class="emoji-pick" data-e="💒">💒</div>
+      <div class="emoji-pick" data-e="🚂">🚂</div>
+      <div class="emoji-pick" data-e="🏍">🏍</div>
+      <div class="emoji-pick" data-e="✈️">✈️</div>
+      <div class="emoji-pick" data-e="🏡">🏡</div>
+      <div class="emoji-pick" data-e="🎉">🎉</div>
+    </div>
+  </div>
+  <div class="field">
+    <label class="field-label">Color</label>
+    <div class="color-picks" id="ntColors">
+      <div class="color-pick sel" data-c="#d97706" style="background:#d97706"></div>
+      <div class="color-pick" data-c="#0369a1" style="background:#0369a1"></div>
+      <div class="color-pick" data-c="#0d7a6a" style="background:#0d7a6a"></div>
+      <div class="color-pick" data-c="#be185d" style="background:#be185d"></div>
+      <div class="color-pick" data-c="#7c3aed" style="background:#7c3aed"></div>
+      <div class="color-pick" data-c="#dc2626" style="background:#dc2626"></div>
+      <div class="color-pick" data-c="#374151" style="background:#374151"></div>
+    </div>
+  </div>
+  <button class="save-btn" id="ntSave">Create Trip</button>
+</div>
 
-<div class="bottom-sheet" id="addSheet">
+<!-- ══ SHEET: ADD EXPENSE ══ -->
+<div class="sheet" id="sheetAdd">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Add Expense</div>
-
   <div class="field">
     <label class="field-label">Name</label>
-    <div class="suggestions" id="nameSuggestions"></div>
-    <input type="text" class="field-input" id="expName" placeholder="e.g. Chai, Auto, Lunch…" autocomplete="off" style="margin-top:8px">
+    <div class="suggestions" id="addSuggestions"></div>
+    <input type="text" class="field-input" id="addName" placeholder="Chai, Auto, Lunch…" autocomplete="off">
   </div>
-
   <div class="field">
     <label class="field-label">Amount</label>
     <div class="amount-wrap">
       <span class="amount-prefix">₹</span>
-      <input type="number" inputmode="decimal" class="field-input amount" id="expAmount" placeholder="0">
+      <input type="number" inputmode="decimal" class="field-input amount" id="addAmount" placeholder="0">
     </div>
   </div>
-
   <div class="field">
     <label class="field-label">Category</label>
-    <div class="chips" id="catChips">
-      <div class="chip selected" data-cat="Food">🍽 Food</div>
+    <div class="chips" id="addCatChips">
+      <div class="chip sel" data-cat="Food">🍽 Food</div>
       <div class="chip" data-cat="Travel">🚗 Travel</div>
       <div class="chip" data-cat="Stay">🏨 Stay</div>
       <div class="chip" data-cat="Shopping">🛍 Shopping</div>
       <div class="chip" data-cat="Misc">✦ Misc</div>
     </div>
   </div>
-
   <div class="field">
     <label class="field-label">Location</label>
-    <div class="location-row">
-      <input type="text" class="field-input" id="expLocation" placeholder="e.g. Varanasi Station">
-      <button class="location-btn" id="gpsBtn" title="Detect location">📍</button>
+    <div class="loc-row">
+      <input type="text" class="field-input" id="addLocation" placeholder="Street, landmark, city…">
+      <button class="loc-btn" id="addGpsBtn">📍</button>
     </div>
   </div>
-
   <div class="field">
     <label class="field-label">Date & Time</label>
-    <input type="datetime-local" class="field-input" id="expDateTime">
+    <input type="datetime-local" class="field-input" id="addDateTime">
   </div>
-
-<button class="save-btn" id="saveBtn">Save Expense</button>
-
+  <button class="save-btn" id="addSaveBtn">Save Expense</button>
 </div>
 
-<!-- Edit Expense Sheet -->
-
-<div class="bottom-sheet" id="editSheet">
+<!-- ══ SHEET: EDIT EXPENSE ══ -->
+<div class="sheet" id="sheetEdit">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Edit Expense</div>
-
   <input type="hidden" id="editId">
-
   <div class="field">
     <label class="field-label">Name</label>
     <input type="text" class="field-input" id="editName">
   </div>
-
   <div class="field">
     <label class="field-label">Amount</label>
     <div class="amount-wrap">
@@ -827,392 +758,682 @@ to { opacity: 1; transform: translateY(0); }
       <input type="number" inputmode="decimal" class="field-input amount" id="editAmount">
     </div>
   </div>
-
   <div class="field">
     <label class="field-label">Category</label>
     <div class="chips" id="editCatChips">
-      <div class="chip selected" data-cat="Food">🍽 Food</div>
+      <div class="chip sel" data-cat="Food">🍽 Food</div>
       <div class="chip" data-cat="Travel">🚗 Travel</div>
       <div class="chip" data-cat="Stay">🏨 Stay</div>
       <div class="chip" data-cat="Shopping">🛍 Shopping</div>
       <div class="chip" data-cat="Misc">✦ Misc</div>
     </div>
   </div>
-
   <div class="field">
     <label class="field-label">Location</label>
     <input type="text" class="field-input" id="editLocation">
   </div>
-
   <div class="field">
     <label class="field-label">Date & Time</label>
     <input type="datetime-local" class="field-input" id="editDateTime">
   </div>
-
   <div class="edit-actions">
-    <button class="edit-save-btn" id="editSaveBtn">Save Changes</button>
-    <button class="delete-btn" id="deleteBtn">🗑 Delete</button>
+    <button class="edit-save" id="editSaveBtn">Save Changes</button>
+    <button class="del-btn" id="delBtn">🗑 Delete</button>
   </div>
 </div>
 
-<!-- FAB -->
+<!-- ══ SHEET: BUDDY ══ -->
+<div class="sheet" id="sheetBuddy">
+  <div class="sheet-handle"></div>
+  <div class="buddy-sheet-avatar">🤖</div>
+  <div class="buddy-sheet-name">Dost</div>
+  <div class="buddy-sheet-hint">Your AI travel companion.<br>Add expenses or get a trip summary by voice or text.</div>
 
-<button class="fab" id="fab">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-  </svg>
-</button>
+  <div class="buddy-examples">
+    <div class="buddy-ex-label">Try saying</div>
+    <div class="buddy-ex-chips">
+      <button class="buddy-ex-chip">Add auto 40 rupees</button>
+      <button class="buddy-ex-chip">Chai 20 Varanasi</button>
+      <button class="buddy-ex-chip">Lunch 180 food</button>
+      <button class="buddy-ex-chip">Summarise my trip</button>
+      <button class="buddy-ex-chip">How much did I spend on food?</button>
+    </div>
+  </div>
+
+  <div class="buddy-input-row">
+    <input type="text" class="buddy-text-input" id="buddyInput" placeholder="Type or speak to Dost…">
+    <button class="buddy-voice-btn" id="buddyVoiceBtn">🎙</button>
+    <button class="buddy-send-btn" id="buddySendBtn">→</button>
+  </div>
+
+  <div class="buddy-response" id="buddyResponse"></div>
+  <button class="buddy-confirm-btn" id="buddyConfirmBtn">✓ Add This Expense</button>
+</div>
 
 <script>
-// ─── DATA ───
-const STORAGE_KEY = 'safar_expenses_v2';
-let expenses = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let selectedCat = 'Food';
-let editSelectedCat = 'Food';
+// ══════════════════════════════════
+//  DATA LAYER
+// ══════════════════════════════════
+const SK = 'safar_v1';
+let data = JSON.parse(localStorage.getItem(SK) || '{"trips":[],"expenses":{}}');
+let activeTripId = null;
+let activeSheet = null;
+let addSelCat = 'Food', editSelCat = 'Food', ntSelEmoji = '🏔', ntSelColor = '#d97706';
+let buddyPending = null;
 
-const CAT_ICONS = { Food:'🍽', Travel:'🚗', Stay:'🏨', Shopping:'🛍', Misc:'✦' };
-const CAT_COLORS = { Food:'#e8890c', Travel:'#2a6b8c', Stay:'#2a8c6e', Shopping:'#c4562a', Misc:'#8b7d72' };
-
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+function saveData(){ localStorage.setItem(SK, JSON.stringify(data)); }
+function tripExpenses(tid){ return (data.expenses[tid]||[]).slice().sort((a,b)=>new Date(b.datetime)-new Date(a.datetime)); }
+function tripTotal(tid){ return (data.expenses[tid]||[]).reduce((s,e)=>s+parseFloat(e.amount||0),0); }
+function fmt(n){ return '₹'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:2}); }
+function fmtTime(iso){ const d=new Date(iso); return d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}); }
+function dateKey(iso){
+  const d=new Date(iso),t=new Date(),y=new Date(t);
+  t.setHours(0,0,0,0);y.setDate(t.getDate()-1);
+  const x=new Date(d);x.setHours(0,0,0,0);
+  if(x.getTime()===t.getTime()) return 'Today';
+  if(x.getTime()===y.getTime()) return 'Yesterday';
+  return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
 }
 
-function formatCurrency(n) {
-  return '₹' + Number(n).toLocaleString('en-IN', {maximumFractionDigits:2});
+const CAT_ICONS = {Food:'🍽',Travel:'🚗',Stay:'🏨',Shopping:'🛍',Misc:'✦'};
+const CAT_COLORS = {Food:'#d97706',Travel:'#0369a1',Stay:'#0d7a6a',Shopping:'#be185d',Misc:'#8a7d6a'};
+
+// ══════════════════════════════════
+//  OVERLAY / SHEETS
+// ══════════════════════════════════
+const overlay = document.getElementById('overlay');
+overlay.addEventListener('click', closeAllSheets);
+
+function openSheet(id){
+  closeAllSheets(false);
+  document.getElementById(id).classList.add('on');
+  overlay.classList.add('on');
+  activeSheet = id;
+  document.getElementById('fab')?.classList.add('open');
+}
+function closeAllSheets(resetFab=true){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));
+  overlay.classList.remove('on');
+  activeSheet = null;
+  if(resetFab) document.getElementById('fab')?.classList.remove('open');
 }
 
-function formatTime(iso) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true});
-}
+// ══════════════════════════════════
+//  HOME SCREEN
+// ══════════════════════════════════
+function renderHome(){
+  const allExp = Object.values(data.expenses).flat();
+  document.getElementById('homeTotalTrips').textContent = data.trips.length;
+  document.getElementById('homeTotalSpent').textContent = fmt(allExp.reduce((s,e)=>s+parseFloat(e.amount||0),0));
+  document.getElementById('homeTotalExp').textContent = allExp.length;
 
-function formatDateKey(iso) {
-  const d = new Date(iso);
-  const today = new Date(); today.setHours(0,0,0,0);
-  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
-  const target = new Date(d); target.setHours(0,0,0,0);
-  if (target.getTime() === today.getTime()) return 'Today';
-  if (target.getTime() === yesterday.getTime()) return 'Yesterday';
-  return d.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'short'});
-}
-
-function getTotal() {
-  return expenses.reduce((s, e) => s + parseFloat(e.amount||0), 0);
-}
-
-// ─── RENDER TIMELINE ───
-function renderTimeline() {
-  const container = document.getElementById('timelineContent');
-  const total = getTotal();
-
-  document.getElementById('headerTotal').textContent = formatCurrency(total);
-
-  if (!expenses.length) {
+  const container = document.getElementById('tripsContainer');
+  if(!data.trips.length){
     container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🗺</div>
-        <div class="empty-title">No expenses yet</div>
-        <div class="empty-sub">Tap the + button to log your first<br>travel expense</div>
+      <div class="empty-trips">
+        <div class="empty-trips-icon">🗺</div>
+        <div class="empty-trips-title">No trips yet</div>
+        <div class="empty-trips-sub">Create your first trip to start<br>tracking expenses</div>
       </div>`;
     return;
   }
-
-  // Group by date
-  const groups = {};
-  const sorted = [...expenses].sort((a,b) => new Date(b.datetime) - new Date(a.datetime));
-  sorted.forEach(exp => {
-    const key = formatDateKey(exp.datetime);
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(exp);
-  });
-
   container.innerHTML = '';
-  Object.entries(groups).forEach(([date, exps]) => {
-    const groupEl = document.createElement('div');
-    groupEl.className = 'date-group';
-    const dayTotal = exps.reduce((s,e) => s+parseFloat(e.amount||0), 0);
-    groupEl.innerHTML = `<div class="date-label">${date} <span style="margin-left:auto;font-size:12px;color:var(--ink-soft);font-weight:600">${formatCurrency(dayTotal)}</span></div>`;
-    exps.forEach(exp => {
-      groupEl.appendChild(createCard(exp));
-    });
-    container.appendChild(groupEl);
-  });
-}
-
-function createCard(exp) {
-  const div = document.createElement('div');
-  div.className = `expense-card ${exp.category}`;
-  div.innerHTML = `
-    <div class="cat-icon ${exp.category}">${CAT_ICONS[exp.category]||'✦'}</div>
-    <div class="expense-info">
-      <div class="expense-name">${exp.name}</div>
-      <div class="expense-meta">
-        ${exp.location ? `<span>📍 ${exp.location}</span>` : ''}
-        <span>🕐 ${formatTime(exp.datetime)}</span>
+  data.trips.slice().reverse().forEach(trip=>{
+    const total = tripTotal(trip.id);
+    const expCount = (data.expenses[trip.id]||[]).length;
+    const card = document.createElement('div');
+    card.className='trip-card';
+    card.innerHTML=`
+      <div class="trip-card-accent" style="background:${trip.color}"></div>
+      <div class="trip-emoji" style="background:${trip.color}22">${trip.emoji}</div>
+      <div class="trip-info">
+        <div class="trip-name">${trip.name}</div>
+        <div class="trip-meta"><span>${expCount} expense${expCount!==1?'s':''}</span><span>•</span><span>${trip.createdAt}</span></div>
       </div>
-    </div>
-    <div class="expense-amount">${formatCurrency(exp.amount)}</div>`;
-  div.addEventListener('click', () => openEdit(exp.id));
-  return div;
+      <div class="trip-total">${fmt(total)}</div>
+      <div class="trip-arrow">›</div>`;
+    card.addEventListener('click',()=>openTrip(trip.id));
+    container.appendChild(card);
+  });
 }
 
-// ─── RENDER SUMMARY ───
-function renderSummary() {
-  const total = getTotal();
-  document.getElementById('summaryTotal').textContent = formatCurrency(total);
-  document.getElementById('summaryCount').textContent = `${expenses.length} expense${expenses.length!==1?'s':''}`;
-
-  // Category breakdown
-  const cats = {};
-  expenses.forEach(e => {
-    cats[e.category] = (cats[e.category]||0) + parseFloat(e.amount||0);
+// ── New Trip ──
+document.getElementById('newTripBtn').addEventListener('click',()=>{
+  document.getElementById('ntName').value='';
+  ntSelEmoji='🏔'; ntSelColor='#d97706';
+  document.querySelectorAll('#ntEmojis .emoji-pick').forEach(e=>e.classList.toggle('sel',e.dataset.e==='🏔'));
+  document.querySelectorAll('#ntColors .color-pick').forEach(e=>e.classList.toggle('sel',e.dataset.c==='#d97706'));
+  openSheet('sheetNewTrip');
+  setTimeout(()=>document.getElementById('ntName').focus(),350);
+});
+document.querySelectorAll('#ntEmojis .emoji-pick').forEach(e=>{
+  e.addEventListener('click',()=>{
+    ntSelEmoji=e.dataset.e;
+    document.querySelectorAll('#ntEmojis .emoji-pick').forEach(x=>x.classList.remove('sel'));
+    e.classList.add('sel');
   });
-
-  const barsEl = document.getElementById('catBars');
-  barsEl.innerHTML = '';
-  Object.entries(cats).sort((a,b) => b[1]-a[1]).forEach(([cat, amt]) => {
-    const pct = total > 0 ? (amt/total*100) : 0;
-    barsEl.innerHTML += `
-      <div class="cat-bar-row">
-        <div class="cat-bar-label">${CAT_ICONS[cat]||'✦'} ${cat}</div>
-        <div class="cat-bar-track">
-          <div class="cat-bar-fill" style="width:${pct}%;background:${CAT_COLORS[cat]||'#8b7d72'}"></div>
-        </div>
-        <div class="cat-bar-amount">${formatCurrency(amt)}</div>
-      </div>`;
+});
+document.querySelectorAll('#ntColors .color-pick').forEach(c=>{
+  c.addEventListener('click',()=>{
+    ntSelColor=c.dataset.c;
+    document.querySelectorAll('#ntColors .color-pick').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
   });
+});
+document.getElementById('ntSave').addEventListener('click',()=>{
+  const name=document.getElementById('ntName').value.trim();
+  if(!name){document.getElementById('ntName').focus();return;}
+  const trip={id:Date.now().toString(),name,emoji:ntSelEmoji,color:ntSelColor,createdAt:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})};
+  data.trips.push(trip);
+  data.expenses[trip.id]=[];
+  saveData();
+  closeAllSheets();
+  renderHome();
+  showToast('🎉 '+name+' created!');
+});
 
-  document.getElementById('splitYou').textContent = formatCurrency(total/2);
-  document.getElementById('splitTogether').textContent = formatCurrency(total);
+// ══════════════════════════════════
+//  TRIP SCREEN
+// ══════════════════════════════════
+function openTrip(tid){
+  activeTripId=tid;
+  const trip=data.trips.find(t=>t.id===tid);
+  document.getElementById('tripHeaderName').textContent=trip.name;
+  document.getElementById('tripHeaderEmoji').textContent=trip.emoji;
+  // Reset to timeline tab
+  document.querySelectorAll('.trip-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab==='timeline'));
+  document.getElementById('tabTimeline').style.display='block';
+  document.getElementById('tabSummary').style.display='none';
+  showScreen('screenTrip');
+  renderTimeline();
 }
 
-// ─── TABS ───
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+document.getElementById('backBtn').addEventListener('click',()=>{
+  showScreen('screenHome');
+  renderHome();
+  activeTripId=null;
+});
+
+document.querySelectorAll('.trip-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.trip-tab').forEach(t=>t.classList.remove('active'));
     tab.classList.add('active');
-    document.getElementById('view-' + tab.dataset.view).classList.add('active');
-    if (tab.dataset.view === 'summary') renderSummary();
+    const isTimeline=tab.dataset.tab==='timeline';
+    document.getElementById('tabTimeline').style.display=isTimeline?'block':'none';
+    document.getElementById('tabSummary').style.display=isTimeline?'none':'block';
+    if(!isTimeline) renderSummary();
   });
 });
 
-// ─── FAB + SHEET ───
-const fab = document.getElementById('fab');
-const overlay = document.getElementById('sheetOverlay');
-const addSheet = document.getElementById('addSheet');
-const editSheet = document.getElementById('editSheet');
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-let activeSheet = null;
-
-function openAddSheet() {
-  activeSheet = addSheet;
-  // Reset form
-  document.getElementById('expName').value = '';
-  document.getElementById('expAmount').value = '';
-  document.getElementById('expLocation').value = '';
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  document.getElementById('expDateTime').value = now.toISOString().slice(0,16);
-  
-  // Reset category
-  selectedCat = 'Food';
-  document.querySelectorAll('#catChips .chip').forEach(c => {
-    c.classList.toggle('selected', c.dataset.cat === 'Food');
-  });
-
-  // Recent suggestions
-  const recent = [...new Set(expenses.slice().reverse().slice(0,8).map(e=>e.name))].slice(0,5);
-  const sugEl = document.getElementById('nameSuggestions');
-  sugEl.innerHTML = recent.map(n => `<button class="suggestion">${n}</button>`).join('');
-  sugEl.querySelectorAll('.suggestion').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.getElementById('expName').value = btn.textContent;
+// ── TIMELINE ──
+function renderTimeline(){
+  const exps=tripExpenses(activeTripId);
+  const total=tripTotal(activeTripId);
+  document.getElementById('tripTotalVal').textContent=fmt(total);
+  const container=document.getElementById('timelineContent');
+  if(!exps.length){
+    container.innerHTML=`
+      <div class="empty-timeline">
+        <div class="empty-timeline-icon">📋</div>
+        <div class="empty-timeline-title">No expenses yet</div>
+        <div style="font-size:13px;color:var(--ink-faint);margin-top:6px">Tap + to log your first expense<br>or ask Dost to add one</div>
+      </div>`;
+    return;
+  }
+  const groups={};
+  exps.forEach(e=>{const k=dateKey(e.datetime);if(!groups[k])groups[k]=[];groups[k].push(e);});
+  container.innerHTML='';
+  Object.entries(groups).forEach(([date,list])=>{
+    const gt=list.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    const g=document.createElement('div');g.className='date-group';
+    g.innerHTML=`<div class="date-label">${date}<span class="date-day-total" style="margin-left:auto">${fmt(gt)}</span></div>`;
+    list.forEach(exp=>{
+      const card=document.createElement('div');
+      card.className=`expense-card ${exp.category}`;
+      card.innerHTML=`
+        <div class="cat-icon ${exp.category}">${CAT_ICONS[exp.category]||'✦'}</div>
+        <div class="expense-info">
+          <div class="expense-name">${exp.name}</div>
+          <div class="expense-meta">
+            ${exp.location?`<span>📍 ${exp.location}</span>`:''}
+            <span>🕐 ${fmtTime(exp.datetime)}</span>
+          </div>
+        </div>
+        <div class="expense-amount">${fmt(exp.amount)}</div>`;
+      card.addEventListener('click',()=>openEdit(exp.id));
+      g.appendChild(card);
     });
+    container.appendChild(g);
+  });
+}
+
+// ── SUMMARY ──
+function renderSummary(){
+  const exps=data.expenses[activeTripId]||[];
+  const total=tripTotal(activeTripId);
+  const container=document.getElementById('summaryContent');
+  if(!exps.length){
+    container.innerHTML=`<div class="empty-timeline"><div class="empty-timeline-icon">📊</div><div class="empty-timeline-title">No data yet</div></div>`;
+    return;
+  }
+
+  // Category breakdown
+  const cats={};
+  exps.forEach(e=>{cats[e.category]=(cats[e.category]||0)+parseFloat(e.amount||0);});
+  const catEntries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+
+  // Donut SVG
+  const r=38,cx=50,cy=50,circ=2*Math.PI*r;
+  let offset=0;
+  let donutSegs='';
+  let legendHTML='';
+  catEntries.forEach(([cat,amt])=>{
+    const pct=amt/total;
+    const dash=pct*circ;
+    donutSegs+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${CAT_COLORS[cat]}" stroke-width="12" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset+=dash;
+    legendHTML+=`<div class="legend-item"><div class="legend-dot" style="background:${CAT_COLORS[cat]}"></div><div class="legend-name">${CAT_ICONS[cat]} ${cat}</div><div class="legend-pct">${Math.round(pct*100)}%</div></div>`;
   });
 
-  overlay.classList.add('visible');
-  addSheet.classList.add('open');
-  fab.classList.add('open');
-  setTimeout(() => document.getElementById('expAmount').focus(), 350);
+  // Day trend
+  const dayTotals={};
+  exps.forEach(e=>{const k=dateKey(e.datetime);dayTotals[k]=(dayTotals[k]||0)+parseFloat(e.amount||0);});
+  const dayEntries=Object.entries(dayTotals).slice(-7);
+  const maxDay=Math.max(...dayEntries.map(d=>d[1]));
+  let trendHTML='';
+  dayEntries.forEach(([day,amt])=>{
+    const h=maxDay>0?Math.max(8,Math.round((amt/maxDay)*60)):8;
+    const isMax=amt===maxDay;
+    trendHTML+=`<div class="trend-bar-wrap"><div class="trend-bar${isMax?' max-bar':''}" style="height:${h}px"></div><div class="trend-bar-lbl">${day.split(' ')[0]}</div></div>`;
+  });
+
+  // Highlights
+  const sorted=[...exps].sort((a,b)=>parseFloat(b.amount)-parseFloat(a.amount));
+  const biggest=sorted[0];
+  const topCat=catEntries[0];
+  const avgPerDay=dayEntries.length>0?total/dayEntries.length:total;
+
+  // AI Buddy summary block
+  const buddySummary=generateBuddySummary(exps,total,cats,catEntries,biggest);
+
+  container.innerHTML=`
+    <div class="summary-hero">
+      <div class="summary-hero-label">Total Spent</div>
+      <div class="summary-hero-amount">${fmt(total)}</div>
+      <div class="summary-hero-count">${exps.length} expense${exps.length!==1?'s':''} logged</div>
+    </div>
+
+    <div class="buddy-card">
+      <div class="buddy-header">
+        <div class="buddy-avatar">🤖</div>
+        <div class="buddy-name-wrap">
+          <div class="buddy-name">Dost's Summary</div>
+          <div class="buddy-status">AI-generated insight</div>
+        </div>
+      </div>
+      <div class="buddy-summary-text">${buddySummary}</div>
+    </div>
+
+    <div class="donut-wrap">
+      <div class="donut-svg-wrap">
+        <svg viewBox="0 0 100 100" width="100" height="100">${donutSegs}</svg>
+        <div class="donut-center">
+          <div class="donut-center-val">${catEntries.length}</div>
+          <div class="donut-center-lbl">cats</div>
+        </div>
+      </div>
+      <div class="donut-legend">${legendHTML}</div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-title">Daily Spending</div>
+      <div class="trend-bars">${trendHTML}</div>
+    </div>
+
+    <div class="highlight-grid">
+      <div class="highlight-card">
+        <div class="highlight-icon">🏆</div>
+        <div class="highlight-label">Biggest Spend</div>
+        <div class="highlight-val">${fmt(biggest.amount)}</div>
+        <div class="highlight-sub">${biggest.name}</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">📦</div>
+        <div class="highlight-label">Top Category</div>
+        <div class="highlight-val">${fmt(topCat[1])}</div>
+        <div class="highlight-sub">${CAT_ICONS[topCat[0]]} ${topCat[0]}</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">📅</div>
+        <div class="highlight-label">Daily Average</div>
+        <div class="highlight-val">${fmt(Math.round(avgPerDay))}</div>
+        <div class="highlight-sub">per day</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">🧾</div>
+        <div class="highlight-label">Avg per Item</div>
+        <div class="highlight-val">${fmt(Math.round(total/exps.length))}</div>
+        <div class="highlight-sub">per expense</div>
+      </div>
+    </div>
+
+    <div class="section-header" style="padding:0;margin-bottom:10px">
+      <div class="section-title">Split (2 people)</div>
+    </div>
+    <div class="split-card">
+      <div class="split-person">
+        <div class="split-name">You</div>
+        <div class="split-amount">${fmt(total/2)}</div>
+      </div>
+      <div class="split-divider">÷</div>
+      <div class="split-person">
+        <div class="split-name">Together</div>
+        <div class="split-amount">${fmt(total)}</div>
+      </div>
+    </div>`;
 }
 
-function closeSheets() {
-  overlay.classList.remove('visible');
-  addSheet.classList.remove('open');
-  editSheet.classList.remove('open');
-  fab.classList.remove('open');
-  activeSheet = null;
+function generateBuddySummary(exps,total,cats,catEntries,biggest){
+  if(!exps.length) return 'No expenses logged yet.';
+  const top=catEntries[0];
+  const topPct=Math.round(top[1]/total*100);
+  // Count by name
+  const nameCounts={};
+  exps.forEach(e=>{nameCounts[e.name]=(nameCounts[e.name]||0)+1;});
+  const mostFreq=Object.entries(nameCounts).sort((a,b)=>b[1]-a[1])[0];
+  const parts=[];
+  parts.push(`You've spent ${fmt(total)} across ${exps.length} expenses.`);
+  parts.push(`${top[0]} is your biggest category at ${topPct}% (${fmt(top[1])}).`);
+  if(biggest) parts.push(`Your highest single expense was <strong>${biggest.name}</strong> at ${fmt(biggest.amount)}.`);
+  if(mostFreq && mostFreq[1]>1) parts.push(`You logged <em>${mostFreq[0]}</em> ${mostFreq[1]} times — clearly a trip favourite! 😄`);
+  if(cats['Travel']) parts.push(`Travel cost you ${fmt(cats['Travel'])} in autos and rides.`);
+  return parts.join(' ');
 }
 
-fab.addEventListener('click', () => {
-  if (activeSheet) { closeSheets(); return; }
+// ── FAB ──
+document.getElementById('fab').addEventListener('click',()=>{
+  if(activeSheet){closeAllSheets();return;}
   openAddSheet();
 });
 
-overlay.addEventListener('click', closeSheets);
+function openAddSheet(){
+  addSelCat='Food';
+  document.getElementById('addName').value='';
+  document.getElementById('addAmount').value='';
+  document.getElementById('addLocation').value='';
+  const now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());
+  document.getElementById('addDateTime').value=now.toISOString().slice(0,16);
+  document.querySelectorAll('#addCatChips .chip').forEach(c=>c.classList.toggle('sel',c.dataset.cat==='Food'));
+  // suggestions
+  const all=data.expenses[activeTripId]||[];
+  const recent=[...new Set(all.slice().reverse().slice(0,10).map(e=>e.name))].slice(0,5);
+  const sugEl=document.getElementById('addSuggestions');
+  sugEl.innerHTML=recent.map(n=>`<button class="sug-btn">${n}</button>`).join('');
+  sugEl.querySelectorAll('.sug-btn').forEach(b=>b.addEventListener('click',()=>{document.getElementById('addName').value=b.textContent;}));
+  openSheet('sheetAdd');
+  setTimeout(()=>document.getElementById('addAmount').focus(),380);
+}
 
-// ─── CATEGORY CHIPS ───
-document.querySelectorAll('#catChips .chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('#catChips .chip').forEach(c => c.classList.remove('selected'));
-    chip.classList.add('selected');
-    selectedCat = chip.dataset.cat;
+document.querySelectorAll('#addCatChips .chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    addSelCat=c.dataset.cat;
+    document.querySelectorAll('#addCatChips .chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
   });
 });
 
-document.querySelectorAll('#editCatChips .chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('#editCatChips .chip').forEach(c => c.classList.remove('selected'));
-    chip.classList.add('selected');
-    editSelectedCat = chip.dataset.cat;
+// GPS
+document.getElementById('addGpsBtn').addEventListener('click',()=>detectLocation('addLocation','addGpsBtn'));
+
+function detectLocation(fieldId, btnId){
+  if(!navigator.geolocation){showToast('📍 Location not supported');return;}
+  document.getElementById(btnId).textContent='⏳';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    document.getElementById(btnId).textContent='📍';
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&addressdetails=1`)
+      .then(r=>r.json())
+      .then(d=>{
+        const a=d.address||{};
+        const parts=[a.road||a.pedestrian||a.footway,a.neighbourhood||a.suburb||a.quarter,a.city||a.town||a.village].filter(Boolean);
+        document.getElementById(fieldId).value=parts.join(', ')||d.display_name?.split(',').slice(0,2).join(',')||'';
+      })
+      .catch(()=>{document.getElementById(fieldId).value=`${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;});
+  },err=>{
+    document.getElementById(btnId).textContent='📍';
+    showToast(err.code===1?'📍 Permission denied':'📍 Could not get location');
+  },{timeout:8000});
+}
+
+document.getElementById('addSaveBtn').addEventListener('click',()=>{
+  const name=document.getElementById('addName').value.trim();
+  const amount=parseFloat(document.getElementById('addAmount').value);
+  if(!name){document.getElementById('addName').focus();return;}
+  if(!amount||amount<=0){document.getElementById('addAmount').focus();return;}
+  const exp={
+    id:Date.now().toString(),
+    tripId:activeTripId,
+    name,amount,
+    category:addSelCat,
+    location:document.getElementById('addLocation').value.trim(),
+    datetime:document.getElementById('addDateTime').value||new Date().toISOString(),
+  };
+  if(!data.expenses[activeTripId]) data.expenses[activeTripId]=[];
+  data.expenses[activeTripId].push(exp);
+  saveData();
+  closeAllSheets();
+  renderTimeline();
+  showToast('✓ '+name+' — '+fmt(amount));
+});
+
+// ── EDIT ──
+function openEdit(id){
+  const exp=(data.expenses[activeTripId]||[]).find(e=>e.id===id);
+  if(!exp)return;
+  document.getElementById('editId').value=id;
+  document.getElementById('editName').value=exp.name;
+  document.getElementById('editAmount').value=exp.amount;
+  document.getElementById('editLocation').value=exp.location||'';
+  const dt=new Date(exp.datetime);dt.setMinutes(dt.getMinutes()-dt.getTimezoneOffset());
+  document.getElementById('editDateTime').value=dt.toISOString().slice(0,16);
+  editSelCat=exp.category;
+  document.querySelectorAll('#editCatChips .chip').forEach(c=>c.classList.toggle('sel',c.dataset.cat===exp.category));
+  openSheet('sheetEdit');
+}
+
+document.querySelectorAll('#editCatChips .chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    editSelCat=c.dataset.cat;
+    document.querySelectorAll('#editCatChips .chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
   });
 });
 
-// ─── GPS ───
-document.getElementById('gpsBtn').addEventListener('click', () => {
-  if (!navigator.geolocation) {
-    showToast('⚠️ Location not supported');
+document.getElementById('editSaveBtn').addEventListener('click',()=>{
+  const id=document.getElementById('editId').value;
+  const name=document.getElementById('editName').value.trim();
+  const amount=parseFloat(document.getElementById('editAmount').value);
+  if(!name||!amount)return;
+  const idx=(data.expenses[activeTripId]||[]).findIndex(e=>e.id===id);
+  if(idx===-1)return;
+  data.expenses[activeTripId][idx]={...data.expenses[activeTripId][idx],name,amount,category:editSelCat,location:document.getElementById('editLocation').value.trim(),datetime:document.getElementById('editDateTime').value};
+  saveData();closeAllSheets();renderTimeline();showToast('✓ Updated');
+});
+
+document.getElementById('delBtn').addEventListener('click',()=>{
+  const id=document.getElementById('editId').value;
+  const exp=(data.expenses[activeTripId]||[]).find(e=>e.id===id);
+  if(!exp||!confirm(`Delete "${exp.name}"?`))return;
+  data.expenses[activeTripId]=data.expenses[activeTripId].filter(e=>e.id!==id);
+  saveData();closeAllSheets();renderTimeline();showToast('🗑 Deleted');
+});
+
+// ══════════════════════════════════
+//  AI BUDDY — DOST
+// ══════════════════════════════════
+document.getElementById('buddyFloat').addEventListener('click',()=>openSheet('sheetBuddy'));
+
+// Example chips
+document.querySelectorAll('.buddy-ex-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    document.getElementById('buddyInput').value=chip.textContent;
+    processBuddy(chip.textContent);
+  });
+});
+
+document.getElementById('buddySendBtn').addEventListener('click',()=>{
+  const val=document.getElementById('buddyInput').value.trim();
+  if(val) processBuddy(val);
+});
+document.getElementById('buddyInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const val=e.target.value.trim();if(val)processBuddy(val);}
+});
+
+// Voice
+let recognition=null;
+const voiceBtn=document.getElementById('buddyVoiceBtn');
+if('webkitSpeechRecognition' in window||'SpeechRecognition' in window){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang='en-IN';
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.onresult=e=>{
+    const transcript=e.results[0][0].transcript;
+    document.getElementById('buddyInput').value=transcript;
+    voiceBtn.classList.remove('listening');
+    voiceBtn.textContent='🎙';
+    processBuddy(transcript);
+  };
+  recognition.onerror=()=>{voiceBtn.classList.remove('listening');voiceBtn.textContent='🎙';};
+  recognition.onend=()=>{voiceBtn.classList.remove('listening');voiceBtn.textContent='🎙';};
+}
+
+voiceBtn.addEventListener('click',()=>{
+  if(!recognition){showToast('🎙 Voice not supported on this browser');return;}
+  if(voiceBtn.classList.contains('listening')){recognition.stop();return;}
+  voiceBtn.classList.add('listening');
+  voiceBtn.textContent='⏹';
+  recognition.start();
+});
+
+function processBuddy(text){
+  const respEl=document.getElementById('buddyResponse');
+  const confirmBtn=document.getElementById('buddyConfirmBtn');
+  respEl.classList.remove('show');
+  confirmBtn.classList.remove('show');
+  buddyPending=null;
+
+  const lower=text.toLowerCase();
+
+  // Summary request
+  if(lower.includes('summar')||lower.includes('how much')||lower.includes('total')||lower.includes('spent')){
+    const exps=data.expenses[activeTripId]||[];
+    const total=tripTotal(activeTripId);
+    if(!exps.length){
+      respEl.innerHTML='You haven\'t logged any expenses yet on this trip. Tap + or say "add chai 20" to start!';
+      respEl.classList.add('show');
+      return;
+    }
+    const cats={};
+    exps.forEach(e=>{cats[e.category]=(cats[e.category]||0)+parseFloat(e.amount||0);});
+    const catEntries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+    const biggest=[...exps].sort((a,b)=>b.amount-a.amount)[0];
+    respEl.innerHTML=generateBuddySummary(exps,total,cats,catEntries,biggest);
+    respEl.classList.add('show');
     return;
   }
-  document.getElementById('gpsBtn').textContent = '⏳';
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      document.getElementById('gpsBtn').textContent = '📍';
-      const lat = pos.coords.latitude.toFixed(4);
-      const lon = pos.coords.longitude.toFixed(4);
-      // Try reverse geocode via public API
-      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-        .then(r => r.json())
-        .then(data => {
-          const place = data.address?.suburb || data.address?.city_district || data.address?.city || data.address?.town || `${lat}, ${lon}`;
-          document.getElementById('expLocation').value = place;
-        })
-        .catch(() => {
-          document.getElementById('expLocation').value = `${lat}, ${lon}`;
-        });
-    },
-    (err) => {
-      document.getElementById('gpsBtn').textContent = '📍';
-      if (err.code === 1) showToast('📍 Location permission denied');
-      else showToast('📍 Could not get location');
-    },
-    { timeout: 8000 }
-  );
-});
 
-// ─── SAVE ───
-document.getElementById('saveBtn').addEventListener('click', () => {
-  const name = document.getElementById('expName').value.trim();
-  const amount = parseFloat(document.getElementById('expAmount').value);
-  if (!name) { document.getElementById('expName').focus(); shakeField('expName'); return; }
-  if (!amount || amount <= 0) { document.getElementById('expAmount').focus(); shakeField('expAmount'); return; }
+  // Category query
+  const catMatch = Object.keys(CAT_ICONS).find(c=>lower.includes(c.toLowerCase()));
+  if(catMatch && (lower.includes('how much')||lower.includes('spent on')||lower.includes('food')||lower.includes('travel')||lower.includes('stay'))){
+    const exps=data.expenses[activeTripId]||[];
+    const catTotal=exps.filter(e=>e.category===catMatch).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    const catExps=exps.filter(e=>e.category===catMatch);
+    respEl.innerHTML=`You spent <strong>${fmt(catTotal)}</strong> on ${catMatch} across ${catExps.length} expenses. ${catExps.length>0?'Items: '+[...new Set(catExps.map(e=>e.name))].slice(0,4).join(', '):''}`;
+    respEl.classList.add('show');
+    return;
+  }
 
-  const exp = {
-    id: Date.now().toString(),
-    name,
-    amount,
-    category: selectedCat,
-    location: document.getElementById('expLocation').value.trim(),
-    datetime: document.getElementById('expDateTime').value || new Date().toISOString(),
-  };
+  // Parse expense from text
+  const parsed=parseExpenseFromText(text);
+  if(parsed){
+    buddyPending=parsed;
+    respEl.innerHTML=`Got it! I'll add:<br><strong>${parsed.name}</strong> — <strong>${fmt(parsed.amount)}</strong> under ${CAT_ICONS[parsed.category]} ${parsed.category}${parsed.location?' at '+parsed.location:''}`;
+    respEl.classList.add('show');
+    confirmBtn.classList.add('show');
+  } else {
+    respEl.innerHTML=`Hmm, I didn't catch that. Try saying something like:<br><em>"Add auto 40 Varanasi"</em> or <em>"Lunch 200 food"</em>`;
+    respEl.classList.add('show');
+  }
+}
 
-  expenses.unshift(exp);
-  save();
-  closeSheets();
+function parseExpenseFromText(text){
+  const lower=text.toLowerCase().replace(/rupees?|rs\.?|₹/gi,'').trim();
+  // Extract number
+  const numMatch=lower.match(/\d+(\.\d+)?/);
+  if(!numMatch) return null;
+  const amount=parseFloat(numMatch[0]);
+
+  // Category detection
+  let category='Misc';
+  if(/food|chai|tea|coffee|lunch|dinner|breakfast|thali|biryani|snack|water|bottle|tiffin|dosa|roti|meal|eat|drink|juice/.test(lower)) category='Food';
+  else if(/auto|taxi|uber|ola|train|bus|metro|rickshaw|bike|ride|travel|transport|cab|ferry|boat/.test(lower)) category='Travel';
+  else if(/hotel|stay|hostel|room|lodge|accommodation|guesthouse|dharamshala/.test(lower)) category='Stay';
+  else if(/shop|buy|bought|cloth|shirt|souvenir|mall|market|purchase/.test(lower)) category='Shopping';
+
+  // Extract name — remove amount and common words
+  let name=lower
+    .replace(/\d+(\.\d+)?/g,'')
+    .replace(/\b(add|log|spent|spend|paid|pay|for|at|in|rupees|rs|food|travel|stay|shopping|misc|category|the|a|an|to|from|cost|costs|costed)\b/g,' ')
+    .replace(/\s+/g,' ').trim();
+
+  // Clean up and capitalize
+  name=name.split(' ').filter(w=>w.length>1).map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+  if(!name) name='Expense';
+
+  // Location - simple: last 1-2 words that look like place names  
+  const locMatch=text.match(/(?:at|in|near|from)\s+([A-Z][a-zA-Z\s]+)/);
+  const location=locMatch?locMatch[1].trim():'';
+
+  return {name,amount,category,location,datetime:new Date().toISOString()};
+}
+
+document.getElementById('buddyConfirmBtn').addEventListener('click',()=>{
+  if(!buddyPending) return;
+  const exp={id:Date.now().toString(),tripId:activeTripId,...buddyPending};
+  if(!data.expenses[activeTripId]) data.expenses[activeTripId]=[];
+  data.expenses[activeTripId].push(exp);
+  saveData();
+  closeAllSheets();
   renderTimeline();
-  showToast('✓ ' + name + ' saved');
+  showToast('🤖 Dost added '+exp.name+' — '+fmt(exp.amount));
+  buddyPending=null;
 });
 
-// ─── EDIT ───
-function openEdit(id) {
-  const exp = expenses.find(e => e.id === id);
-  if (!exp) return;
-
-  document.getElementById('editId').value = id;
-  document.getElementById('editName').value = exp.name;
-  document.getElementById('editAmount').value = exp.amount;
-  document.getElementById('editLocation').value = exp.location || '';
-
-  const dt = new Date(exp.datetime);
-  dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
-  document.getElementById('editDateTime').value = dt.toISOString().slice(0,16);
-
-  editSelectedCat = exp.category;
-  document.querySelectorAll('#editCatChips .chip').forEach(c => {
-    c.classList.toggle('selected', c.dataset.cat === exp.category);
-  });
-
-  activeSheet = editSheet;
-  overlay.classList.add('visible');
-  editSheet.classList.add('open');
+// ══════════════════════════════════
+//  TOAST
+// ══════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
 }
 
-document.getElementById('editSaveBtn').addEventListener('click', () => {
-  const id = document.getElementById('editId').value;
-  const name = document.getElementById('editName').value.trim();
-  const amount = parseFloat(document.getElementById('editAmount').value);
-  if (!name || !amount) return;
+// ══════════════════════════════════
+//  OFFLINE
+// ══════════════════════════════════
+function updateOnline(){document.getElementById('offlineBar').style.display=navigator.onLine?'none':'block';}
+window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);updateOnline();
 
-  const idx = expenses.findIndex(e => e.id === id);
-  if (idx === -1) return;
-  expenses[idx] = {
-    ...expenses[idx],
-    name,
-    amount,
-    category: editSelectedCat,
-    location: document.getElementById('editLocation').value.trim(),
-    datetime: document.getElementById('editDateTime').value,
-  };
-  save();
-  closeSheets();
-  renderTimeline();
-  showToast('✓ Updated');
-});
-
-document.getElementById('deleteBtn').addEventListener('click', () => {
-  const id = document.getElementById('editId').value;
-  const exp = expenses.find(e => e.id === id);
-  if (!exp) return;
-  if (!confirm(`Delete "${exp.name}" (${formatCurrency(exp.amount)})?`)) return;
-  expenses = expenses.filter(e => e.id !== id);
-  save();
-  closeSheets();
-  renderTimeline();
-  showToast('🗑 Deleted');
-});
-
-// ─── TOAST ───
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function shakeField(id) {
-  const el = document.getElementById(id);
-  el.style.borderColor = '#e74c3c';
-  el.style.animation = 'none';
-  setTimeout(() => { el.style.borderColor = ''; }, 1200);
-}
-
-// ─── OFFLINE DETECTION ───
-function updateOnline() {
-  document.getElementById('offlineBadge').style.display = navigator.onLine ? 'none' : 'block';
-}
-window.addEventListener('online', updateOnline);
-window.addEventListener('offline', updateOnline);
-updateOnline();
-
-// ─── TRIP NAME FROM URL / DEFAULT ───
-const urlParams = new URLSearchParams(window.location.search);
-const tripName = urlParams.get('trip') || 'Varanasi Trip';
-document.getElementById('tripName').textContent = tripName;
-
-// ─── INIT ───
-renderTimeline();
+// ══════════════════════════════════
+//  INIT
+// ══════════════════════════════════
+renderHome();
 </script>
-
 </body>
 </html>
